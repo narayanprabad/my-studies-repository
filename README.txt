@@ -1,1 +1,0 @@
-Hi.. My studies 1 with Git
