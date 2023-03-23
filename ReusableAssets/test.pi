@@ -1,70 +1,59 @@
-import boto3
-import fastavro
-import concurrent.futures
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import *
+from pyspark.sql.types import *
 
-from io import BytesIO
+# Define the format configuration
+format_config = [
+    {"name": "id", "start": 1, "end": 10},
+    {"name": "name", "start": 11, "end": 30},
+    {"name": "age", "start": 31, "end": 32},
+    {"name": "gender", "start": 33, "end": 33},
+]
 
-# Define Avro schema
-avro_schema = {
-    "type": "record",
-    "name": "Record",
-    "fields": [
-        {"name": "id", "type": "int"},
-        {"name": "name", "type": "string"}
-    ]
-}
+# Define the Avro schema
+avro_schema = StructType([
+    StructField("id", StringType(), True),
+    StructField("name", StringType(), True),
+    StructField("age", IntegerType(), True),
+    StructField("gender", StringType(), True)
+])
 
-# Define function to parse a fixed width input file
-def parse_input_file(input_data, fmt_file):
-    # Parse the format configuration and extract the columns
-    with open(fmt_file) as f:
-        columns = [int(line.split()[1]) for line in f]
+# Define the S3 input and output paths
+input_path = "s3://my-bucket/input-file.txt"
+output_path = "s3://my-bucket/output-file.avro"
 
-    # Parse the input file
-    records = []
-    for line in input_data.splitlines():
-        record = {}
-        for i, col in enumerate(columns):
-            field_name = "col" + str(i+1)
-            record[field_name] = line[col[0]:col[1]].strip()
-        records.append(record)
-    
-    return records
+# Define the SparkSession
+spark = SparkSession.builder.appName("FixedWidthParser").getOrCreate()
 
-# Define function to enrich records
-def enrich_records(record):
-    # Do some processing to enrich the record
-    record["id"] = int(record["col1"])
-    record["name"] = record["col2"].upper()
-    del record["col1"]
-    del record["col2"]
-    
-    return record
+# Read the input file as a text file
+input_rdd = spark.sparkContext.textFile(input_path)
 
-# Define function to write Avro records to S3
-def write_avro_to_s3(records, avro_schema, bucket, key):
-    # Convert records to Avro binary format
-    bytes_io = BytesIO()
-    fastavro.writer(bytes_io, avro_schema, records)
-    bytes_io.seek(0)
+# Define a UDF to parse the fixed-width file
+@udf(returnType=avro_schema)
+def parse_fixed_width_line(line):
+    # Parse the line based on the format configuration
+    fields = {}
+    for field in format_config:
+        start = field["start"] - 1
+        end = field["end"]
+        fields[field["name"]] = line[start:end].strip()
 
-    # Write Avro file to S3
-    s3_client = boto3.client('s3')
-    s3_client.upload_fileobj(bytes_io, bucket, key)
+    # Perform some enrichment on the data
+    fields["age"] = int(fields["age"]) * 2
+    fields["gender"] = "M" if fields["gender"] == "M" else "F"
 
-# Define main function
-def main():
-    # Read input file from S3
-    s3 = boto3.client('s3')
-    input_data = s3.get_object(Bucket='my-bucket', Key='input-file.txt')['Body'].read().decode('utf-8')
+    # Return the parsed and enriched data as a Row object
+    return Row(**fields)
 
-    # Parse input file and enrich records
-    records = parse_input_file(input_data, 'fmt-file.txt')
-    with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
-        enriched_records = list(executor.map(enrich_records, records))
+# Convert the text file to a DataFrame and parse each line using the UDF
+df = input_rdd.map(parse_fixed_width_line).toDF()
 
-    # Write enriched records to Avro file and upload to S3
-    write_avro_to_s3(enriched_records, avro_schema, 'my-bucket', 'output-file.avro')
+# Write the result to S3 in Avro format
+df.write.format("com.databricks.spark.avro").save(output_path)
 
-if __name__ == "__main__":
-    main()
+# Stop the SparkSession
+spark.stop()
+
+# wget https://repo1.maven.org/maven2/com/databricks/spark-avro_2.11/4.0.0/spark-avro_2.11-4.0.0.jar
+
+# pyspark --packages com.databricks:spark-avro_2.11:4.0.0 --driver-class-path spark-avro_2.11-4.0.0.jar
