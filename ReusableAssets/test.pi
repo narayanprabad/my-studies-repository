@@ -1,0 +1,70 @@
+import boto3
+import fastavro
+import concurrent.futures
+
+from io import BytesIO
+
+# Define Avro schema
+avro_schema = {
+    "type": "record",
+    "name": "Record",
+    "fields": [
+        {"name": "id", "type": "int"},
+        {"name": "name", "type": "string"}
+    ]
+}
+
+# Define function to parse a fixed width input file
+def parse_input_file(input_data, fmt_file):
+    # Parse the format configuration and extract the columns
+    with open(fmt_file) as f:
+        columns = [int(line.split()[1]) for line in f]
+
+    # Parse the input file
+    records = []
+    for line in input_data.splitlines():
+        record = {}
+        for i, col in enumerate(columns):
+            field_name = "col" + str(i+1)
+            record[field_name] = line[col[0]:col[1]].strip()
+        records.append(record)
+    
+    return records
+
+# Define function to enrich records
+def enrich_records(record):
+    # Do some processing to enrich the record
+    record["id"] = int(record["col1"])
+    record["name"] = record["col2"].upper()
+    del record["col1"]
+    del record["col2"]
+    
+    return record
+
+# Define function to write Avro records to S3
+def write_avro_to_s3(records, avro_schema, bucket, key):
+    # Convert records to Avro binary format
+    bytes_io = BytesIO()
+    fastavro.writer(bytes_io, avro_schema, records)
+    bytes_io.seek(0)
+
+    # Write Avro file to S3
+    s3_client = boto3.client('s3')
+    s3_client.upload_fileobj(bytes_io, bucket, key)
+
+# Define main function
+def main():
+    # Read input file from S3
+    s3 = boto3.client('s3')
+    input_data = s3.get_object(Bucket='my-bucket', Key='input-file.txt')['Body'].read().decode('utf-8')
+
+    # Parse input file and enrich records
+    records = parse_input_file(input_data, 'fmt-file.txt')
+    with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+        enriched_records = list(executor.map(enrich_records, records))
+
+    # Write enriched records to Avro file and upload to S3
+    write_avro_to_s3(enriched_records, avro_schema, 'my-bucket', 'output-file.avro')
+
+if __name__ == "__main__":
+    main()
