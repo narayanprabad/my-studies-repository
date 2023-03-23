@@ -34,5 +34,6 @@ df.write.format('com.databricks.spark.avro').save(f's3://{bucket_name}/{output_f
 #wget https://repo1.maven.org/maven2/com/databricks/spark-avro_2.11/4.0.0/spark-avro_2.11-4.0.0.jar
 
 
+#pyspark --packages com.databricks:spark-avro_2.11:4.0.0 --driver-class-path spark-avro_2.11-4.0.0.jar
 
 
