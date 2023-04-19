@@ -1,0 +1,47 @@
+import org.apache.spark.SparkConf;
+import org.apache.spark.streaming.Duration;
+import org.apache.spark.streaming.api.java.JavaDStream;
+import org.apache.spark.streaming.api.java.JavaStreamingContext;
+import org.apache.spark.sql.SparkSession;
+import org.apache.spark.sql.SaveMode;
+
+import java.util.Arrays;
+
+public class RESTStreamingJob {
+  public static void main(String[] args) throws InterruptedException {
+    String restEndpoint = "https://your-rest-endpoint.com";
+    String s3Path = "s3://your-s3-bucket/path/";
+    String glueDatabase = "your-glue-database";
+    String glueTable = "your-glue-table";
+
+    SparkConf conf = new SparkConf().setAppName("RESTStreamingJob");
+    JavaStreamingContext ssc = new JavaStreamingContext(conf, new Duration(600000)); // 10 minute batch interval
+
+    JavaDStream<String> stream = ssc.receiverStream(new RESTReceiver(restEndpoint));
+
+    stream.foreachRDD(rdd -> {
+        if (!rdd.isEmpty()) {
+            SparkSession spark = SparkSession.builder().config(rdd.sparkContext().getConf()).getOrCreate();
+
+            // Convert RDD to DataFrame
+            Dataset<Row> df = spark.read().json(rdd);
+
+            // Add partitions for System and business date
+            df = df.withColumn("System", functions.lit("your-system-name"))
+                    .withColumn("business_date", functions.from_unixtime(functions.col("timestamp"), "yyyy-MM-dd"))
+                    .repartition(1);
+
+            // Write data to Glue catalog
+            df.write().mode(SaveMode.Append)
+                    .partitionBy("System", "business_date")
+                    .format("parquet")
+                    .save(s3Path + glueDatabase + "/" + glueTable);
+        }
+    });
+
+    ssc.start();
+    ssc.awaitTermination();
+  }
+}
+
+In this example, the RESTReceiver is a custom implementation of Receiver<String> that reads from the REST endpoint and returns an iterator of JSON strings. The Spark Streaming context is created with a batch interval of 10 minutes, and the received RDDs are converted to DataFrames, enriched with System and business date partitions, and then written to the Glue catalog partitioned by System and business date in Parquet format.
