@@ -1,0 +1,46 @@
+// Step 1: Create an instance of the IBM MQ Java client library
+MQQueueConnectionFactory factory = new MQQueueConnectionFactory();
+factory.setHostName("hostname");
+factory.setPort(port);
+factory.setChannel("channel");
+factory.setQueueManager("queueManager");
+
+// Step 2: Create a Spark Streaming context with a batch interval of 10 minutes
+SparkConf conf = new SparkConf().setAppName("MQ to Glue");
+JavaStreamingContext jssc = new JavaStreamingContext(conf, Durations.minutes(10));
+
+// Step 3: Create a DStream to read messages from IBM MQ
+JavaInputDStream<Message> stream = MQUtils.createJavaMQStream(jssc, factory, "queueName");
+
+// Step 4: Convert the messages to Parquet format and write to S3
+stream.foreachRDD(rdd -> {
+  if (!rdd.isEmpty()) {
+    JavaRDD<Row> rows = rdd.map(message -> {
+      // Convert message to Parquet row and extract System and business date information
+      String system = ...;
+      String businessDate = ...;
+      // Create a new row with partition columns
+      Row row = RowFactory.create(system, businessDate, ...);
+      return row;
+    });
+    StructType schema = // Define Parquet schema
+    Dataset<Row> df = spark.createDataFrame(rows, schema);
+    df.write.partitionBy("System", "business_date").mode(SaveMode.Append).parquet("s3a://bucket-name/path/to/parquet/files");
+    // Create or update the corresponding Glue catalog partition
+    String catalogDatabaseName = "my_database";
+    String catalogTableName = "my_table";
+    String system = ...;
+    String businessDate = ...;
+    String partitionValue = "System=" + system + ",business_date=" + businessDate;
+    GlueCatalogUtils.createOrUpdatePartition(catalogDatabaseName, catalogTableName, partitionValue);
+  }
+});
+
+// Step 5: Start the Spark Streaming context
+jssc.start();
+jssc.awaitTermination();
+
+
+In this code, we add the logic to extract the System and business date information from the messages, create a new row with partition columns, and write the data to S3 in Parquet format with partitioning by System and business date. We then use the createOrUpdatePartition() method provided by the GlueCatalogUtils class to create or update the corresponding Glue catalog partition for each batch of messages. Note that you will need to provide the appropriate implementation for the createOrUpdatePartition() method based on the Glue API.
+
+Also note that this code assumes that you have already set up the Glue catalog with the appropriate database and table schema, and that you have the necessary credentials for accessing the Glue catalog, IBM MQ, and S3.
