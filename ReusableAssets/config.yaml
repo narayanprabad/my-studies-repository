@@ -1,0 +1,54 @@
+recon_engine:
+  name: Generic_Matching
+  no_of_legs: 2
+  scheduler:
+    type: scheduled
+    cron_expression: "0 0 * * *"
+  matching_engine:
+    no_of_stages: 3
+    stage_config:
+      - stage_number: 1
+        recon_parameters:
+          - col1
+          - col2
+          - col3
+      - stage_number: 2
+        recon_parameters:
+          - col4
+          - col5
+          - col6
+      - stage_number: 3
+        recon_parameters:
+          - col7
+          - col8
+          - col9
+  leg_sources:
+    - source_1:
+        type: mq_topic
+        name: Q1
+      source_2:
+        type: rest_api
+        url: "/transactions"
+  notifications:
+    - data_ingestion_notification_1
+    - data_ingestion_notification_2
+  enrichment_process:
+    emr_job:
+      name: data_enrichment_process
+      s3_location: s3://processing-bucket/enrichment/
+      notifications:
+        - enrichment_notification_1
+        - enrichment_notification_2
+  matching_process:
+    emr_job:
+      name: matching_engine
+      s3_location: s3://conformed-bucket/matching_results/
+      notifications:
+        - matching_notification
+  post_processing:
+    - name: post_processing_step_1
+      purpose: "Purpose of post processing step 1"
+      output_location: s3://post-processing-bucket/output1/
+    - name: post_processing_step_2
+      purpose: "Purpose of post processing step 2"
+      output_location: s3://post-processing-bucket/output2/
