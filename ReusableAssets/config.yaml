@@ -27,28 +27,40 @@ recon_engine:
         type: mq_topic
         name: Q1
       source_2:
-        type: rest_api
-        url: "/transactions"
+        type: nessie_api
+        url: "/rest"
   notifications:
-    - data_ingestion_notification_1
-    - data_ingestion_notification_2
+    - name: data_ingestion_notification_1
+      lambda_arn: arn:aws:lambda:us-east-1:123456789012:function:data_ingestion_function_1
+    - name: data_ingestion_notification_2
+      lambda_arn: arn:aws:lambda:us-east-1:123456789012:function:data_ingestion_function_2
+    - name: enrichment_notification_1
+      lambda_arn: arn:aws:lambda:us-east-1:123456789012:function:enrichment_function_leg_1
+    - name: enrichment_notification_2
+      lambda_arn: arn:aws:lambda:us-east-1:123456789012:function:enrichment_function_leg_2
+    - name: matching_notification
+      lambda_arn: arn:aws:lambda:us-east-1:123456789012:function:matching_function
   enrichment_process:
-    emr_job:
-      name: data_enrichment_process
-      s3_location: s3://processing-bucket/enrichment/
-      notifications:
-        - enrichment_notification_1
-        - enrichment_notification_2
+    leg_1:
+      emr_job:
+        name: data_enrichment_process_leg_1
+        s3_location: s3://processing-bucket/enrichment/leg_1/
+    leg_2:
+      emr_job:
+        name: data_enrichment_process_leg_2
+        s3_location: s3://processing-bucket/enrichment/leg_2/
   matching_process:
     emr_job:
       name: matching_engine
       s3_location: s3://conformed-bucket/matching_results/
-      notifications:
-        - matching_notification
   post_processing:
-    - name: post_processing_step_1
-      purpose: "Purpose of post processing step 1"
-      output_location: s3://post-processing-bucket/output1/
-    - name: post_processing_step_2
-      purpose: "Purpose of post processing step 2"
-      output_location: s3://post-processing-bucket/output2/
+    - name: EMR job post_processing_step_1
+      purpose: "Purpose of EMR job post processing step 1"
+      emr_job:
+        name: post_processing_step_1
+        s3_location: s3://post-processing-bucket/output1/
+    - name: EMR job post_processing_step_2
+      purpose: "Purpose of EMR job post processing step 2"
+      emr_job:
+        name: post_processing_step_2
+        s3_location: s3://post-processing-bucket/output2/
