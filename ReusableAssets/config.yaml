@@ -27,7 +27,7 @@ recon_engine:
         type: mq_topic
         name: Q1
       source_2:
-        type: nessie_api
+        type: rest_api
         url: "/rest"
   notifications:
     - name: data_ingestion_notification_1
