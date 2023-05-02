@@ -1,13 +1,13 @@
 Star time	End time		
-4.45 AM	4.55 AM	Wake up / Stretch	Alarm
-4.58 AM	5.22 AM	Basic things / Brush / Flause etc	Alarm
-5.25 AM	6.15 AM	Water boiling and Elevate + Lumosity + Read something interesting	Alarm
-6.20 AM	6.55 AM	Walk / Run / Jog+Audio book or 1 concept	Alarm
-7.00 AM	7.45 AM	Meditation	Alarm
-7.50 AM	8.20 AM	Bath+Tea+News+linkedin  or 1 concept	No alarm
-8.30 AM	10.45 AM	Study+AWS	In bus or not in bus
-10.45 AM	1.30 PM	Office task 1	Go through AWS
-1.40 PM	5.00 PM	Office task 2	GO through AWS
-5.20 PM	8.00 PM	Office task 3	
-8.10 PM	9.45 PM	Study algorithms	Mandatory
-9.45 PM	4.30 AM	Chitsakthi and sleep	
+4.30 AM	4.45 AM	Wake up / Stretch	Alarm
+4.50 AM	5.20 AM	Basic things / Brush / Flause etc	Alarm
+5.30 AM	6.30 AM	Water boiling and Elevate + Lumosity + Read something interesting	Alarm
+6.40 AM	7.25 AM	Walk / Run / Jog+Audio book or 1 concept	Alarm
+7.30 AM	8.15 AM	Meditation	Alarm
+8.20 AM	9.00 AM	Bath+Tea+1 concept+Break fast	No alarm
+9.05 AM	11.00 AM	Study+AWS or work if more work is there	Go through AWS
+11.10 AM	2.00 PM	Office task 1	Go through AWS
+2.10 PM	5.10 PM	Office task 2	GO through AWS
+5.20 PM	7.20 PM	Office task 3	
+7.25 PM	9.15 PM	Study algorithms	Mandatory
+9.15 PM	9.30 PM	Chitsakthi and sleep	
