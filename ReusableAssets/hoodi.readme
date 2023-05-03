@@ -1,0 +1,44 @@
+resource "aws_glue_catalog_table" "hudi_table" {
+  name = "hudi_table"
+
+  database_name = "my_database"
+
+  table_type = "EXTERNAL_TABLE"
+
+  parameters = {
+    "classification" = "hudi"
+    "compressionType" = "snappy"
+    "serialization.format" = "1"
+    "hoodie.datasource.write.keygenerator.class" = "org.apache.hudi.keygen.SimpleKeyGenerator"
+    "hoodie.datasource.hive_sync.use_jdbc" = "false"
+    "hoodie.datasource.hive_sync.table_type" = "COPY_ON_WRITE"
+    "hoodie.datasource.hive_sync.partition_fields" = "partition_field"
+    "hoodie.datasource.hive_sync.partition_extractor_class" = "org.apache.hudi.hive.MultiPartKeysValueExtractor"
+    "table_type" = "Athena_v3"
+  }
+
+  storage_descriptor {
+    location = "s3://my-bucket/path/to/hudi/files/"
+    input_format = "org.apache.hudi.hadoop.HoodieInputFormat"
+    output_format = "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat"
+    serde_info {
+      name = "hudi"
+      serialization_library = "org.apache.hudi.hadoop.HoodieHiveSerDe"
+      parameters = {
+        "serialization.format" = "1"
+      }
+    }
+  }
+
+  partition_keys = [
+    "partition_field"
+  ]
+
+  schema {
+    columns = [
+      { name = "field1", type = "string" },
+      { name = "field2", type = "int" },
+      { name = "field3", type = "float" }
+    ]
+  }
+}
