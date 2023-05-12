@@ -1,0 +1,54 @@
+import org.apache.hudi.DataSourceUtils;
+import org.apache.hudi.DataSourceWriteOptions;
+import org.apache.hudi.HoodieDataSourceHelpers;
+import org.apache.hudi.WriteStatus;
+import org.apache.hudi.common.model.HoodieKey;
+import org.apache.hudi.common.model.HoodieRecord;
+import org.apache.hudi.common.table.HoodieTableMetaClient;
+import org.apache.hudi.config.HoodieWriteConfig;
+import org.apache.hudi.keygen.SimpleKeyGenerator;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+import java.util.UUID;
+
+public class UpsertToHudi {
+    public static void main(String[] args) throws Exception {
+        // Create HoodieWriteConfig object to configure the write operation
+        HoodieWriteConfig config = HoodieWriteConfig.newBuilder()
+                .withPath("s3://my-bucket/my-table/")
+                .withSchema(SCHEMA)
+                .withKeyGenerator(SimpleKeyGenerator.class.getName())
+                .withWriteConcurrency(10)
+                .forTable(TABLE_NAME)
+                .withProperties(props)
+                .build();
+
+        // Create HoodieTableMetaClient object to interact with the table metadata
+        HoodieTableMetaClient metaClient = HoodieTableMetaClient.builder()
+                .setConf(new Configuration())
+                .setBasePath(config.getBasePath())
+                .setLoadActiveTimelineOnLoad(true)
+                .build();
+
+        // Create a list of HoodieRecord objects to perform upsert
+        List<HoodieRecord> records = new ArrayList<>();
+        // Populate the list with existing records or new records
+        // Each HoodieRecord object must contain a unique key, which will be used to perform the upsert operation
+        records.add(new HoodieRecord(new HoodieKey("partition1", "id1"), new org.apache.avro.generic.GenericData.Record(new org.apache.avro.Schema.Parser().parse(SCHEMA))));
+        records.add(new HoodieRecord(new HoodieKey("partition2", "id2"), new org.apache.avro.generic.GenericData.Record(new org.apache.avro.Schema.Parser().parse(SCHEMA))));
+
+        // Create HoodieWriteClient object to perform upsert
+        HoodieWriteClient<HoodieRecord> writeClient = new HoodieWriteClient<>(new HoodieWriteConfig(config, true));
+
+        // Perform upsert operation
+        List<WriteStatus> writeStatuses = writeClient.upsert(records, UUID.randomUUID().toString());
+
+        // Commit the write operation
+        HoodieCommitMetadata commitMetadata = HoodieDataSourceHelpers.commitAndUpdateMetadata(writeClient.getHadoopConf(), writeStatuses, metaClient);
+
+        // Close the write client
+        writeClient.close();
+    }
+}
