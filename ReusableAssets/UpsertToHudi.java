@@ -1,3 +1,4 @@
+//SELECT CONVERT(DATETIME, CONVERT(VARCHAR(13), GETDATE(), 120) + ':00:00', 120)
 import org.apache.hudi.common.model.HoodieKey;
 import org.apache.hudi.common.model.HoodieRecord;
 import org.apache.hudi.common.util.HoodieAvroUtils;
