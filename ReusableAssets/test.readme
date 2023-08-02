@@ -45,5 +45,9 @@ In this code, we add the logic to extract the System and business date informati
 
 Also note that this code assumes that you have already set up the Glue catalog with the appropriate database and table schema, and that you have the necessary credentials for accessing the Glue catalog, IBM MQ, and S3.
 
+
+INSERT INTO my_table (timestamp_concat)
+VALUES (CONCAT(REPLACE(uuid_generate_v4()::TEXT, '-', ''), TO_CHAR(NOW(), 'FM9999999999999999999999999')::BIGINT));
+
 INSERT INTO my_table (timestamp_concat)
 VALUES (CONCAT(uuid_generate_v4(), EXTRACT(EPOCH FROM NOW()) * 1000)::TEXT);
