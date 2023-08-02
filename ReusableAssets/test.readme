@@ -51,3 +51,6 @@ VALUES (CONCAT(REPLACE(uuid_generate_v4()::TEXT, '-', ''), TO_CHAR(NOW(), 'FM999
 
 INSERT INTO my_table (timestamp_concat)
 VALUES (CONCAT(uuid_generate_v4(), EXTRACT(EPOCH FROM NOW()) * 1000)::TEXT);
+
+INSERT INTO my_table (timestamp_concat)
+VALUES (CONCAT(REPLACE(uuid_generate_v4()::TEXT, '-', ''), TO_CHAR(NOW(), 'FM9999999999999999999999999')::BIGINT));
