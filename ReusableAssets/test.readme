@@ -1,56 +1,15 @@
-// Step 1: Create an instance of the IBM MQ Java client library
-MQQueueConnectionFactory factory = new MQQueueConnectionFactory();
-factory.setHostName("hostname");
-factory.setPort(port);
-factory.setChannel("channel");
-factory.setQueueManager("queueManager");
-
-// Step 2: Create a Spark Streaming context with a batch interval of 10 minutes
-SparkConf conf = new SparkConf().setAppName("MQ to Glue");
-JavaStreamingContext jssc = new JavaStreamingContext(conf, Durations.minutes(10));
-
-// Step 3: Create a DStream to read messages from IBM MQ
-JavaInputDStream<Message> stream = MQUtils.createJavaMQStream(jssc, factory, "queueName");
-
-// Step 4: Convert the messages to Parquet format and write to S3
-stream.foreachRDD(rdd -> {
-  if (!rdd.isEmpty()) {
-    JavaRDD<Row> rows = rdd.map(message -> {
-      // Convert message to Parquet row and extract System and business date information
-      String system = ...;
-      String businessDate = ...;
-      // Create a new row with partition columns
-      Row row = RowFactory.create(system, businessDate, ...);
-      return row;
-    });
-    StructType schema = // Define Parquet schema
-    Dataset<Row> df = spark.createDataFrame(rows, schema);
-    df.write.partitionBy("System", "business_date").mode(SaveMode.Append).parquet("s3a://bucket-name/path/to/parquet/files");
-    // Create or update the corresponding Glue catalog partition
-    String catalogDatabaseName = "my_database";
-    String catalogTableName = "my_table";
-    String system = ...;
-    String businessDate = ...;
-    String partitionValue = "System=" + system + ",business_date=" + businessDate;
-    GlueCatalogUtils.createOrUpdatePartition(catalogDatabaseName, catalogTableName, partitionValue);
-  }
-});
-
-// Step 5: Start the Spark Streaming context
-jssc.start();
-jssc.awaitTermination();
-
-
-In this code, we add the logic to extract the System and business date information from the messages, create a new row with partition columns, and write the data to S3 in Parquet format with partitioning by System and business date. We then use the createOrUpdatePartition() method provided by the GlueCatalogUtils class to create or update the corresponding Glue catalog partition for each batch of messages. Note that you will need to provide the appropriate implementation for the createOrUpdatePartition() method based on the Glue API.
-
-Also note that this code assumes that you have already set up the Glue catalog with the appropriate database and table schema, and that you have the necessary credentials for accessing the Glue catalog, IBM MQ, and S3.
-
-
-INSERT INTO my_table (timestamp_concat)
-VALUES (CONCAT(REPLACE(uuid_generate_v4()::TEXT, '-', ''), TO_CHAR(NOW(), 'FM9999999999999999999999999')::BIGINT));
-
-INSERT INTO my_table (timestamp_concat)
-VALUES (CONCAT(uuid_generate_v4(), EXTRACT(EPOCH FROM NOW()) * 1000)::TEXT);
-
-INSERT INTO my_table (timestamp_concat)
-VALUES (CONCAT(REPLACE(uuid_generate_v4()::TEXT, '-', ''), TO_CHAR(NOW(), 'FM9999999999999999999999999')::BIGINT));
+Demonstrated exceptional technical competence as a Red Hat Certified Architect and AWS Professional.
+Spearheaded and successfully drove AWS adoption across India, leading to cost savings and innovation.
+Proven track record of implementing complex solutions on AWS, optimizing efficiency and scalability.
+Adept at leading and mentoring high-performing teams, fostering a collaborative and supportive work environment.
+Strong problem-solving abilities, consistently delivering innovative solutions to complex challenges.
+Recognized as a Subject Matter Expert (SME) in Regulatory applications, well-suited to lead the Regulatory team in Glasgow.
+Actively covered production issues during critical EMEA and early NA time zones, displaying dedication and responsibility.
+Implemented DevOps practices, streamlining development and deployment processes for enhanced productivity.
+Designed and implemented high-availability architectures for critical applications, ensuring uninterrupted operations.
+Received commendations from clients and superiors for outstanding project delivery, meeting and exceeding expectations.
+Effectively conveyed technical concepts to both technical and non-technical stakeholders through excellent communication skills.
+Led cross-functional teams in successful large-scale migration projects, ensuring seamless transitions to cloud environments.
+Conducted workshops and training sessions to upskill team members, contributing to a knowledgeable and empowered workforce.
+Acted as a trusted advisor to senior management, providing valuable insights on technology investments and improvements.
+Demonstrated a strong work ethic and dedication, consistently achieving exceptional results and inspiring colleagues.
