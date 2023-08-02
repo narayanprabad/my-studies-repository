@@ -44,3 +44,6 @@ jssc.awaitTermination();
 In this code, we add the logic to extract the System and business date information from the messages, create a new row with partition columns, and write the data to S3 in Parquet format with partitioning by System and business date. We then use the createOrUpdatePartition() method provided by the GlueCatalogUtils class to create or update the corresponding Glue catalog partition for each batch of messages. Note that you will need to provide the appropriate implementation for the createOrUpdatePartition() method based on the Glue API.
 
 Also note that this code assumes that you have already set up the Glue catalog with the appropriate database and table schema, and that you have the necessary credentials for accessing the Glue catalog, IBM MQ, and S3.
+
+INSERT INTO my_table (timestamp_concat)
+VALUES (CONCAT(uuid_generate_v4(), EXTRACT(EPOCH FROM NOW()) * 1000)::TEXT);
