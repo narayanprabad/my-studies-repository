@@ -1,0 +1,58 @@
+import com.opencsv.CSVWriter;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Service;
+
+import java.io.FileWriter;
+import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+@Service
+public class UserService {
+    private final JdbcTemplate jdbcTemplate;
+
+    public UserService(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
+    public void exportDataToCSV() {
+        String sql = "SELECT * FROM users"; // Replace with your SQL query
+        try {
+            ResultSet resultSet = jdbcTemplate.getDataSource().getConnection().createStatement().executeQuery(sql);
+
+            // Define the CSV file path
+            String csvFilePath = "output.csv";
+
+            // Create a FileWriter for the CSV file
+            FileWriter writer = new FileWriter(csvFilePath);
+
+            // Create a CSVWriter
+            CSVWriter csvWriter = new CSVWriter(writer);
+
+            // Write column headers from ResultSet metadata
+            int columnCount = resultSet.getMetaData().getColumnCount();
+            String[] headers = new String[columnCount];
+            for (int i = 1; i <= columnCount; i++) {
+                headers[i - 1] = resultSet.getMetaData().getColumnName(i);
+            }
+            csvWriter.writeNext(headers);
+
+            // Write data rows
+            while (resultSet.next()) {
+                String[] data = new String[columnCount];
+                for (int i = 1; i <= columnCount; i++) {
+                    data[i - 1] = resultSet.getString(i);
+                }
+                csvWriter.writeNext(data);
+            }
+
+            // Close resources
+            csvWriter.close();
+            writer.close();
+
+            System.out.println("Data has been exported to " + csvFilePath);
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
