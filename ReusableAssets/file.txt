@@ -1,0 +1,21 @@
+WITH LatestVersion AS (
+  SELECT
+    business_date,
+    MAX(version) AS latest_version
+  FROM
+    your_glue_catalog_table
+  WHERE
+    business_date >= 'start_date' AND business_date <= 'end_date'
+  GROUP BY
+    business_date
+)
+
+SELECT
+  t.*
+FROM
+  your_glue_catalog_table t
+JOIN
+  LatestVersion lv
+ON
+  t.business_date = lv.business_date
+  AND t.version = lv.latest_version;
