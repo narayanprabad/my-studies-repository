@@ -1,0 +1,72 @@
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.spark.sql.DataFrame;
+import org.apache.spark.sql.Row;
+import org.apache.spark.sql.SQLContext;
+
+import com.amazonaws.services.glue.AWSGlue;
+import com.amazonaws.services.glue.AWSGlueClientBuilder;
+import com.amazonaws.services.glue.model.WriteDynamicFrameToGlueTableRequest;
+
+public class ExportDataToGlueTable {
+
+    private static final String GLUE_CATALOG_ID = "my_catalog";
+    private static final String GLUE_DATABASE_NAME = "my_database";
+    private static final String GLUE_TABLE_NAME = "my_table";
+
+    public static void main(String[] args) throws Exception {
+        // Connect to PostgreSQL
+        Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/my_database", "my_user", "my_password");
+
+        // Get the database metadata
+        DatabaseMetaData databaseMetaData = connection.getMetaData();
+
+        // Get the result set for the table
+        ResultSet resultSet = databaseMetaData.getColumns(null, null, "pnl_eod", null);
+
+        // Create a list of column names
+        List<String> columnNames = new ArrayList<>();
+        while (resultSet.next()) {
+            columnNames.add(resultSet.getString("COLUMN_NAME"));
+        }
+
+        // Create a map of column names to data types
+        Map<String, String> columnTypes = new HashMap<>();
+        resultSet = databaseMetaData.getColumns(null, null, "pnl_eod", null);
+        while (resultSet.next()) {
+            columnTypes.put(resultSet.getString("COLUMN_NAME"), resultSet.getString("DATA_TYPE"));
+        }
+
+        // Create a Spark SQL context
+        SQLContext sqlContext = new SQLContext(SparkSession.builder().getOrCreate());
+
+        // Create a Spark DataFrame from the result set
+        DataFrame dataFrame = sqlContext.createDataFrame(resultSet, Row.class, columnNames.toArray(new String[0]));
+
+        // Convert the Spark DataFrame to a Glue DynamicFrame
+        org.apache.spark.sql.DynamicFrame dynamicFrame = dataFrame.toDF();
+
+        // Create a Glue client
+        AWSGlue glueClient = AWSGlueClientBuilder.defaultClient();
+
+        // Create a WriteDynamicFrameToGlueTableRequest
+        WriteDynamicFrameToGlueTableRequest request = new WriteDynamicFrameToGlueTableRequest();
+        request.setCatalogId(GLUE_CATALOG_ID);
+        request.setDatabaseName(GLUE_DATABASE_NAME);
+        request.setTableName(GLUE_TABLE_NAME);
+        request.setDynamicFrame(dynamicFrame);
+
+        // Write the data to the Glue table
+        glueClient.writeDynamicFrameToGlueTable(request);
+
+        // Close the PostgreSQL connection
+        connection.close();
+    }
+}
