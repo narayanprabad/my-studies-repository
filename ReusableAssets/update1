@@ -1,0 +1,21 @@
+UPDATE desk
+SET desk.name1 = (
+  SELECT LISTAGG(mapping.name1, ',') WITHIN GROUP (ORDER BY mapping.name1)
+  FROM desk_ref_mapping mapping
+  WHERE mapping.id_le = desk.id_le
+),
+desk.name2 = (
+  SELECT LISTAGG(mapping.name2, ',') WITHIN GROUP (ORDER BY mapping.name2)
+  FROM desk_ref_mapping mapping
+  WHERE mapping.id_le = desk.id_le
+),
+desk.name3 = (
+  SELECT LISTAGG(mapping.name3, ',') WITHIN GROUP (ORDER BY mapping.name3)
+  FROM desk_ref_mapping mapping
+  WHERE mapping.id_le = desk.id_le
+)
+WHERE desk.id_le IN (
+  SELECT id_le FROM desk_ref_mapping
+  GROUP BY id_le
+  HAVING COUNT(*) > 1
+);
