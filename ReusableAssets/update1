@@ -1,21 +1,66 @@
-UPDATE desk
-SET desk.name1 = (
-  SELECT LISTAGG(mapping.name1, ',') WITHIN GROUP (ORDER BY mapping.name1)
-  FROM desk_ref_mapping mapping
-  WHERE mapping.id_le = desk.id_le
-),
-desk.name2 = (
-  SELECT LISTAGG(mapping.name2, ',') WITHIN GROUP (ORDER BY mapping.name2)
-  FROM desk_ref_mapping mapping
-  WHERE mapping.id_le = desk.id_le
-),
-desk.name3 = (
-  SELECT LISTAGG(mapping.name3, ',') WITHIN GROUP (ORDER BY mapping.name3)
-  FROM desk_ref_mapping mapping
-  WHERE mapping.id_le = desk.id_le
-)
-WHERE desk.id_le IN (
-  SELECT id_le FROM desk_ref_mapping
-  GROUP BY id_le
-  HAVING COUNT(*) > 1
-);
+import org.springframework.jdbc.core.JdbcTemplate;
+
+import org.apache.spark.sql.DataFrame;
+import org.apache.spark.sql.RowFactory;
+import org.apache.spark.sql.types.DataType;
+import org.apache.spark.sql.types.StructField;
+import org.apache.spark.sql.types.StructType;
+
+public class SpringJdbcToSparkDataFrame {
+
+    public static void main(String[] args) {
+        // Create a JdbcTemplate object to connect to the PostgreSQL database.
+        JdbcTemplate jdbcTemplate = new JdbcTemplate("jdbc:postgresql://localhost:5432/my_database", "postgres", "password");
+
+        // Execute a SQL query to get the results.
+        String sql = "SELECT * FROM my_table";
+        List<Row> rows = jdbcTemplate.query(sql, (rs, rowNum) -> {
+            // Create a list of values for the corresponding columns.
+            List<Object> values = new ArrayList<>();
+            for (int i = 0; i < rs.getMetaData().getColumnCount(); i++) {
+                values.add(rs.getObject(i + 1));
+            }
+
+            // Create a Spark row from the list of values.
+            return RowFactory.create(values.toArray());
+        });
+
+        // Create a Spark DataFrame from the list of rows.
+        StructType schema = getSchemaFromResultSet(rows);
+        DataFrame sparkDataFrame = new DataFrame(spark.sqlContext(), rows, schema);
+
+        // Set the column names of the Spark DataFrame to the names of the columns in the PostgreSQL result set.
+        List<String> columnNames = new ArrayList<>();
+        for (int i = 0; i < schema.size(); i++) {
+            columnNames.add(schema.fields()[i].name());
+        }
+        sparkDataFrame.columns(columnNames.toArray(new String[columnNames.size()]));
+
+        // Print the Spark DataFrame.
+        sparkDataFrame.show();
+    }
+
+    private static StructType getSchemaFromResultSet(List<Row> rows) {
+        // Create a list of StructField objects, one for each column in the result set.
+        List<StructField> structFields = new ArrayList<>();
+        for (Row row : rows) {
+            for (int i = 0; i < row.size(); i++) {
+                Object value = row.get(i);
+                if (value == null) {
+                    continue;
+                }
+
+                // Get the data type of the column.
+                DataType dataType = SparkSession.builder().getOrCreate().sqlContext().inferDataType(value.toString());
+
+                // Create a StructField object for the column.
+                StructField structField = new StructField(row.schema().getColumnName(i + 1), dataType);
+                structFields.add(structField);
+            }
+            break;
+        }
+
+        // Create a StructType object from the list of StructField objects.
+        return new StructType(structFields.toArray(new StructField[structFields.size()]));
+    }
+}
