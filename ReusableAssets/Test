@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+//SELECT CONVERT(CHAR(36), SUBSTRING(CONVERT(CHAR(36), NEWID()), 1, 8) + SUBSTRING(CONVERT(CHAR(36), NEWID()), 10, 4) + SUBSTRING(CONVERT(CHAR(36), NEWID()), 15, 4) + SUBSTRING(CONVERT(CHAR(36), NEWID()), 20, 12)) + CAST(CAST(GETDATE() AS BIGINT) AS CHAR(20)) AS unique_id;
 @Service
 public class UserService {
     private final JdbcTemplate jdbcTemplate;
