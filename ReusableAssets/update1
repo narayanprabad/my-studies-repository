@@ -14,3 +14,12 @@ END
 
 CLOSE schema_cursor
 DEALLOCATE schema_cursor
+
+-- Find the role names granted to the user
+SELECT r.name AS RoleName
+FROM sysprotects p
+JOIN sysusers u ON p.uid = u.uid
+JOIN sysusers r ON p.grantee = r.uid
+WHERE u.name = 'your_user_id'
+  AND p.action = 193  -- 193 represents "role" in sysprotects table
+  AND p.id = OBJECT_ID('sysusers')
