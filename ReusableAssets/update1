@@ -23,3 +23,16 @@ JOIN sysusers r ON p.grantee = r.uid
 WHERE u.name = 'your_user_id'
   AND p.action = 193  -- 193 represents "role" in sysprotects table
   AND p.id = OBJECT_ID('sysusers')
+
+
+ public static Column defaultIfEmpty(Column column, String defaultValue) {
+        return column.when(length(trim(column)).equalTo(0), lit(defaultValue)).otherwise(column);
+    }
+
+    private static Column length(Column column) {
+        return column.expr("length(trim(" + column + "))");
+    }
+
+    private static Column trim(Column column) {
+        return column.expr("trim(" + column + ")");
+    }
