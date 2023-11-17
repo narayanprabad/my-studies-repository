@@ -101,3 +101,25 @@ public class AthenaService {
     }
 }
 
+
+   private static void logDataFrame(Dataset<Row> df) {
+        log.info("DataFrame contents:");
+
+        // Log column names (headers)
+        String[] columns = df.columns();
+        log.info("| " + String.join(" | ", columns) + " |");
+
+        // Log separator line
+        log.info("|" + "-".repeat(4 * columns.length - 1) + "|");
+
+        // Log each row
+        df.collectAsList().forEach(row -> log.info("| " + formatRow(row) + " |"));
+    }
+
+    private static String formatRow(Row row) {
+        String[] values = new String[row.size()];
+        for (int i = 0; i < row.size(); i++) {
+            values[i] = String.valueOf(row.get(i));
+        }
+        return String.join(" | ", values);
+    }
