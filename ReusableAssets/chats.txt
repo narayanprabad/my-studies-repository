@@ -1,13 +1,5 @@
-I wanted to take a moment to acknowledge your exceptional contributions to the Encore initiative. Your dedication and proactive approach have been invaluable to the success of this project.
+I would like to commend Sanchit for his outstanding contributions to the team, especially as a new developer and fresh graduate. Despite being early in his career, he has taken full ownership of the complex Intraday Transaction API, which has been a cornerstone for the success of ENCORE and its intraday reconciliation processes. His deep understanding and ability to handle such complexity at an early stage speak volumes about his technical acumen and dedication.
 
-Some of the key highlights of your work include:
+In addition to his API ownership, Sanchit has become a champion of Terraform within the team. His support and expertise in resolving issues related to Terraform have been invaluable, further enhancing the team's productivity and technical capabilities.
 
-Booking trades into GMI, handling transfers and misallocations: Your meticulous attention to detail ensured smooth operations and prevented potential errors.
-Proactively devising controls for the Operate function: The foresight you demonstrated in implementing these controls has strengthened our overall process and reduced operational risk.
-Testing end-to-end flows: Your thorough testing of various flows related to Encore helped in identifying and resolving critical issues, contributing to the stability of our systems.
-Being a key pillar in the Encore initiative: You consistently supported the team with your expertise and played a pivotal role in ensuring the initiative stayed on track.
-Trade reconciliations and testing: Your efforts in reconciling trades and conducting comprehensive testing were instrumental in maintaining accuracy and efficiency.
-Bursa and Asia closeouts and support: The way you handled closeouts and provided support during critical periods was exemplary and helped maintain seamless operations.
-Your ability to juggle these responsibilities with such competence and professionalism has been inspiring. I sincerely appreciate all the hard work you’ve put into making this initiative a success.
-
-Looking forward to collaborating on future projects together.
+I have consistently observed Sanchit to be positive, enthusiastic, and proactive in his approach. He actively participates in and leads employee engagement activities in Bangalore, demonstrating his well-roundedness beyond technical contributions. Sanchit is truly a great addition to the Global Clearing team, and I have no doubt that he has a bright future ahead of him.
