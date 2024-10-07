@@ -1,5 +1,24 @@
-I would like to commend Sanchit for his outstanding contributions to the team, especially as a new developer and fresh graduate. Despite being early in his career, he has taken full ownership of the complex Intraday Transaction API, which has been a cornerstone for the success of ENCORE and its intraday reconciliation processes. His deep understanding and ability to handle such complexity at an early stage speak volumes about his technical acumen and dedication.
+I am honored to nominate Sachin Mudholkar for the Catalyst Award in recognition of his extraordinary dedication to customer focus. As the application owner of Union2, Sachin took charge when the application was in a highly unstable state, with an average of two critical incidents every day and hundreds of user inquiries. User confidence in the application was at an all-time low, and escalations from senior management had reached critical levels.
 
-In addition to his API ownership, Sanchit has become a champion of Terraform within the team. His support and expertise in resolving issues related to Terraform have been invaluable, further enhancing the team's productivity and technical capabilities.
+Sachin's first priority was establishing a strong and transparent relationship with users. He proactively engaged with them, carefully listening to their concerns, understanding their pain points, and showing a genuine commitment to resolving them. He launched a weekly business connect forum, providing users with a direct platform to raise concerns and collaborate on solutions.
 
-I have consistently observed Sanchit to be positive, enthusiastic, and proactive in his approach. He actively participates in and leads employee engagement activities in Bangalore, demonstrating his well-roundedness beyond technical contributions. Sanchit is truly a great addition to the Global Clearing team, and I have no doubt that he has a bright future ahead of him.
+Sachin also took a structured approach to problem-solving. He identified recurring issues, implemented permanent solutions, and through his efforts, brought the number of production incidents down to zero. This turnaround was a direct result of his technical expertise, proactive communication, and customer-focused mindset. His work saved the Operate team two hours of valuable time every day, significantly improving the overall efficiency of the team.
+
+The feedback from the Operate team and production management has been overwhelmingly positive, with Sachin winning the confidence and trust of both users and stakeholders alike. His dedication to excellence has not only stabilized Union2 but has also transformed it into a reliable application that users now trust.
+
+For these reasons, I believe Sachin Mudholkar is highly deserving of the Catalyst Award for Customer Focus.
+
+
+
+
+
+----------------
+
+
+I would like to nominate Saurabh for the Catalyst Award in recognition of his outstanding contributions to the first AI/ML initiative within Global Clearing. Saurabh has been instrumental in leading the program, which involves close collaboration with the global machine learning teams to develop a model that predicts whether a break is an actual break or a noise break.
+
+This pilot has been a huge win for the business, as it addresses the significant challenge of false positives, saving around 6 hours per day by allowing the team to focus only on valid breaks. Moreover, Saurabh proposed an innovative add-on feature to automatically apply adjustments to valid breaks. This enhancement is projected to result in approximately 1000 hours of operational savings over the course of a year and deliver an additional 2 full-time equivalent (FTE) savings once fully implemented.
+
+Saurabh's foresight, technical expertise, and commitment to driving business value through automation have set a new benchmark for our AI/ML initiatives. His contributions are directly aligned with our goals to optimize operations and achieve greater efficiency, making him an ideal candidate for the Catalyst Award.
+
+Thank you for considering Saurabh’s nomination.
