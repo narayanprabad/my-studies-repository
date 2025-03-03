@@ -1,12 +1,12 @@
 *AI Hackathon Idea: "ReguGuard AI" – Automated Regulatory Intelligence & Adaptive Reporting System*  
 
 ### *Overview*  
-Develop an AI-powered platform that *automates regulatory change monitoring, interprets updates in real-time, and dynamically adapts JPMC’s global regulatory reporting workflows. The solution uses **natural language processing (NLP)* to analyze regulatory documents (e.g., Basel III, MiFID II, GDPR) and integrates with existing systems to auto-update reporting templates, validate data accuracy, and flag compliance gaps.  
+Develop an AI-powered platform that *automates regulatory change monitoring, interprets updates in real-time, and dynamically adapts XXX’s global regulatory reporting workflows. The solution uses **natural language processing (NLP)* to analyze regulatory documents (e.g., Basel III, MiFID II, GDPR) and integrates with existing systems to auto-update reporting templates, validate data accuracy, and flag compliance gaps.  
 
 ---
 
 ### *Why It Wins*  
-1. *Alignment with JPMC’s Needs*:  
+1. *Alignment with XXX’s Needs*:  
    - Directly addresses challenges faced by the *Global Regulatory Reporting Team*: manual tracking of regulations, data inconsistencies, and compliance risks.  
    - Enhances accuracy and speed of submissions to regulators like the Fed, ECB, or APAC agencies.  
 
@@ -18,13 +18,13 @@ Develop an AI-powered platform that *automates regulatory change monitoring, int
 3. *Business Impact*:  
    - *Risk Reduction*: Minimizes penalties from non-compliance by ensuring reports align with the latest regulations.  
    - *Time Savings*: Cuts manual effort by 40%+ in tracking changes and updating workflows.  
-   - *Scalability*: Centralizes regulatory intelligence for reuse across JPMC’s global teams.  
+   - *Scalability*: Centralizes regulatory intelligence for reuse across XXX’s global teams.  
 
 ---
 
 ### *Technical Implementation*  
 - *NLP & AI Tools*: Use open-source libraries (e.g., spaCy, Hugging Face) to parse regulatory text and extract key requirements.  
-- *Integration*: Connect with JPMC’s existing data lakes and reporting tools (e.g., Tableau, Alteryx) via APIs.  
+- *Integration*: Connect with XXX’s existing data lakes and reporting tools (e.g., Tableau, Alteryx) via APIs.  
 - *Confluence Automation*: Generate real-time documentation of regulatory changes, action items, and updated workflows in Confluence.  
 
 ---
@@ -48,4 +48,4 @@ Develop an AI-powered platform that *automates regulatory change monitoring, int
 - *Unified Platform*: Combines regulatory tracking, data validation, and reporting into one tool, eliminating silos.  
 - *Audit Trail*: Every change is logged in Confluence with timestamps and rationale for full transparency.  
 
-*This idea tackles a high-stakes pain point with AI innovation, aligns with JPMC’s global priorities, and delivers measurable efficiency gains – a strong contender to win!* 🚀
+*This idea tackles a high-stakes pain point with AI innovation, aligns with XXX’s global priorities, and delivers measurable efficiency gains – a strong contender to win!* 🚀
