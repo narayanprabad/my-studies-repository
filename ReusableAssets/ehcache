@@ -1,0 +1,181 @@
+src/main/java/com/example/sessiondemo/Application.java
+--------------------------------------------------
+package com.example.sessiondemo;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
+
+@SpringBootApplication
+@EnableCaching
+public class Application {
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+}
+
+
+src/main/java/com/example/sessiondemo/store/SessionStore.java
+--------------------------------------------------
+package com.example.sessiondemo.store;
+
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
+import org.springframework.stereotype.Component;
+
+@Component
+public class SessionStore {
+
+    private final Cache sessionCache;
+
+    public SessionStore(CacheManager cacheManager) {
+        this.sessionCache = cacheManager.getCache("sessionCache");
+    }
+
+    public void put(String sessionId, String key, Object value) {
+        sessionCache.put(sessionId + ":" + key, value);
+    }
+
+    public <T> T get(String sessionId, String key, Class<T> type) {
+        return sessionCache.get(sessionId + ":" + key, type);
+    }
+
+    public void remove(String sessionId, String key) {
+        sessionCache.evict(sessionId + ":" + key);
+    }
+}
+
+
+src/main/java/com/example/sessiondemo/store/SessionIdResolver.java
+--------------------------------------------------
+package com.example.sessiondemo.store;
+
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
+import java.util.Optional;
+import java.util.UUID;
+
+@Component
+public class SessionIdResolver {
+
+    private static final String SESSION_COOKIE_NAME = "X-SESSION-ID";
+
+    public String resolveOrCreate(HttpServletRequest request, HttpServletResponse response) {
+        String sid = Arrays.stream(Optional.ofNullable(request.getCookies()).orElse(new Cookie[0]))
+                .filter(cookie -> SESSION_COOKIE_NAME.equals(cookie.getName()))
+                .map(Cookie::getValue)
+                .findFirst()
+                .orElse(null);
+
+        if (sid == null) {
+            sid = UUID.randomUUID().toString();
+            Cookie cookie = new Cookie(SESSION_COOKIE_NAME, sid);
+            cookie.setPath("/");
+            cookie.setHttpOnly(true);
+            cookie.setMaxAge(1800); // 30 mins
+            response.addCookie(cookie);
+        }
+
+        return sid;
+    }
+}
+
+
+src/main/java/com/example/sessiondemo/controller/UserController.java
+--------------------------------------------------
+package com.example.sessiondemo.controller;
+
+import com.example.sessiondemo.store.SessionIdResolver;
+import com.example.sessiondemo.store.SessionStore;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+public class UserController {
+
+    private final SessionStore sessionStore;
+    private final SessionIdResolver sessionIdResolver;
+
+    public UserController(SessionStore sessionStore, SessionIdResolver sessionIdResolver) {
+        this.sessionStore = sessionStore;
+        this.sessionIdResolver = sessionIdResolver;
+    }
+
+    @PostMapping("/login")
+    public String login(HttpServletRequest request, HttpServletResponse response) {
+        String sessionId = sessionIdResolver.resolveOrCreate(request, response);
+        sessionStore.put(sessionId, "user", "john123");
+        return "User stored in EHCache.";
+    }
+
+    @GetMapping("/me")
+    public String getUser(HttpServletRequest request, HttpServletResponse response) {
+        String sessionId = sessionIdResolver.resolveOrCreate(request, response);
+        String user = sessionStore.get(sessionId, "user", String.class);
+        return user != null ? "User: " + user : "No user found.";
+    }
+}
+
+
+src/main/resources/ehcache.xml
+--------------------------------------------------
+<config xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+        xmlns='http://www.ehcache.org/v3'
+        xsi:schemaLocation="http://www.ehcache.org/v3 http://www.ehcache.org/schema/ehcache-core-3.0.xsd">
+    <cache alias="sessionCache">
+        <heap unit="entries">10000</heap>
+        <expiry>
+            <ttl unit="minutes">30</ttl>
+        </expiry>
+    </cache>
+</config>
+
+
+pom.xml
+--------------------------------------------------
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.example</groupId>
+    <artifactId>sessiondemo</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.7.18</version>
+        <relativePath/>
+    </parent>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.ehcache</groupId>
+            <artifactId>ehcache</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>
