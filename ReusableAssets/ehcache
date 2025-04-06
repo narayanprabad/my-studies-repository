@@ -17,22 +17,34 @@ public class Application {
 
 src/main/java/com/example/sessiondemo/store/SessionStore.java
 --------------------------------------------------
-package com.example.sessiondemo.store;
+import net.sf.ehcache.config.ConfigurationFactory;
+import net.sf.ehcache.CacheManager as EHCache2Manager;
+import org.springframework.cache.ehcache.EhCacheCacheManager;
 
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
-import org.springframework.stereotype.Component;
-
-import java.util.Objects;
-import java.util.concurrent.ConcurrentMap;
+import java.io.InputStream;
 
 @Component
-public class SessionStore {
+public class SessionsStore {
 
     private final Cache sessionCache;
 
-    public SessionStore(CacheManager cacheManager) {
-        this.sessionCache = cacheManager.getCache("sessionCache");
+    public SessionsStore(CacheManager springCacheManager) {
+        this.sessionCache = springCacheManager.getCache("sessionCache");
+
+        if (this.sessionCache == null) {
+            // Fallback: load EHCache config manually
+            try (InputStream is = getClass().getClassLoader().getResourceAsStream("ehcache.xml")) {
+                EHCache2Manager ehCache2Manager = new EHCache2Manager(ConfigurationFactory.parseConfiguration(is));
+                CacheManager fallbackSpringManager = new EhCacheCacheManager(ehCache2Manager);
+                this.sessionCache = fallbackSpringManager.getCache("sessionCache");
+
+                if (this.sessionCache == null) {
+                    throw new IllegalStateException("Cache 'sessionCache' not found in ehcache.xml");
+                }
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to load EHCache config programmatically", e);
+            }
+        }
     }
 
     public void put(String sessionId, String key, Object value) {
@@ -45,14 +57,6 @@ public class SessionStore {
 
     public void remove(String sessionId, String key) {
         sessionCache.evict(sessionId + ":" + key);
-    }
-
-    public void invalidate(String sessionId) {
-        Object nativeCache = sessionCache.getNativeCache();
-        if (nativeCache instanceof ConcurrentMap) {
-            ConcurrentMap<Object, Object> map = (ConcurrentMap<Object, Object>) nativeCache;
-            map.keySet().removeIf(key -> Objects.toString(key).startsWith(sessionId + ":"));
-        }
     }
 }
 
