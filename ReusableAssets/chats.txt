@@ -89,3 +89,34 @@ Live demo: From natural language → reconciliation logic → auto-classificatio
 Before & after case study (manual vs autonomous recon)
 
 Discuss architecture (LLM + rules engine + feedback loop + audit layer)
+
+CREATE OR REPLACE FUNCTION weekday_diff(date1_text TEXT, date2_text TEXT)
+RETURNS INTEGER AS $$
+DECLARE
+    start_date DATE;
+    end_date DATE;
+    diff_days INTEGER := 0;
+    current_date DATE;
+BEGIN
+    -- Convert the input strings to dates
+    start_date := TO_DATE(LEAST(date1_text, date2_text), 'YYYYMMDD');
+    end_date := TO_DATE(GREATEST(date1_text, date2_text), 'YYYYMMDD');
+
+    -- Loop through dates and count weekdays only
+    current_date := start_date;
+    WHILE current_date < end_date LOOP
+        IF EXTRACT(DOW FROM current_date) NOT IN (0, 6) THEN  -- 0 = Sunday, 6 = Saturday
+            diff_days := diff_days + 1;
+        END IF;
+        current_date := current_date + INTERVAL '1 day';
+    END LOOP;
+
+    RETURN diff_days;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+
+
+
