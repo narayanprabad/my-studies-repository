@@ -11,6 +11,37 @@ Automatically map data sources, detect breaks, and suggest match rules
 
 Use machine learning to identify patterns, noise, or exceptions
 
+
+CREATE OR REPLACE FUNCTION calculate_workdays(start_date_str TEXT, end_date_str TEXT)
+RETURNS INTEGER AS $$
+DECLARE
+  start_date DATE;
+  end_date DATE;
+  workdays INTEGER;
+BEGIN
+  -- Convert input strings to dates
+  start_date := TO_DATE(start_date_str, 'YYYYMMDD');
+  end_date := TO_DATE(end_date_str, 'YYYYMMDD');
+
+  -- If dates are the same, return 0 immediately
+  IF start_date = end_date THEN
+    RETURN 0;
+  END IF;
+
+  -- Calculate workdays between dates (excluding weekends)
+  SELECT COUNT(*) INTO workdays
+  FROM GENERATE_SERIES(
+    LEAST(start_date, end_date) + INTERVAL '1 day', -- Start from day after earlier date
+    GREATEST(start_date, end_date),                 -- End at later date
+    INTERVAL '1 day'
+  ) AS day
+  WHERE EXTRACT(DOW FROM day) BETWEEN 1 AND 5; -- Count only Mon (1) to Fri (5)
+
+  RETURN workdays;
+END;
+$$ LANGUAGE plpgsql;
+
+
 Suggest next best actions or even autonomously fix valid breaks
 
 🎯 Real-World Scenario
