@@ -149,3 +149,15 @@ SELECT
       your_string || 'YOUR_NEW_STRING'  -- Append if no version found
   END AS modified_string
 FROM your_table;
+
+
+WITH example_data AS (
+  SELECT 'gmi__59_ghshdhagajdgsyajeh gagageysyauwhwyeyeyetsywywy124.43543254334 namaste. 099999_v13' AS input_str
+)
+SELECT 
+  regexp_replace(
+    input_str,
+    '(.*)(v\d+)(\D*)$',
+    '\1_NEWVERSION\2\3'  -- Insert "_NEWVERSION" before the version
+  ) AS result
+FROM example_data;
