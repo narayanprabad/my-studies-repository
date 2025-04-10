@@ -134,3 +134,18 @@ Live demo: From natural language → reconciliation logic → auto-classificatio
 Before & after case study (manual vs autonomous recon)
 
 Discuss architecture (LLM + rules engine + feedback loop + audit layer)
+
+
+
+SELECT 
+  CASE 
+    WHEN your_string ~ 'v\d+(\D|$)' THEN 
+      regexp_replace(
+        your_string,
+        '(.*)(v\d+)(\D*)$',  -- Split into: [prefix][version][non-digit suffix]
+        '\1' || 'YOUR_NEW_STRING' || '\2\3'  -- Insert new string before version
+      )
+    ELSE 
+      your_string || 'YOUR_NEW_STRING'  -- Append if no version found
+  END AS modified_string
+FROM your_table;
