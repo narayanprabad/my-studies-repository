@@ -1,4 +1,4 @@
-Absolutely — "Autonomous Reconciliation Designer" is a fantastic, cutting-edge idea — especially relevant in financial services, compliance, or operations automation. It fits beautifully under AI/ML Delivery, Engineering, or Customer/Employee Experience tracks. Let’s break it down:
+9Absolutely — "Autonomous Reconciliation Designer" is a fantastic, cutting-edge idea — especially relevant in financial services, compliance, or operations automation. It fits beautifully under AI/ML Delivery, Engineering, or Customer/Employee Experience tracks. Let’s break it down:
 
 💡 Topic Idea:
 “Autonomous Reconciliation Designer: AI-Powered Reconciliation Without Manual Rules”
@@ -76,6 +76,20 @@ Outputs human-readable justifications for audit or compliance teams
 NLP and LLM Integration (e.g., OpenAI, Claude, Bedrock)
 
 ML modeling (classification, clustering, pattern detection)
+
+SELECT
+  COALESCE(
+    COUNT(*) FILTER (
+      WHERE EXTRACT(DOW FROM day) BETWEEN 1 AND 5 -- 1=Mon to 5=Fri
+    ),
+    0
+  ) AS workday_diff
+FROM
+  GENERATE_SERIES(
+    LEAST(TO_DATE('20240101', 'YYYYMMDD'), TO_DATE('20240105', 'YYYYMMDD')) + INTERVAL '1 day',
+    GREATEST(TO_DATE('20240101', 'YYYYMMDD'), TO_DATE('20240105', 'YYYYMMDD')),
+    INTERVAL '1 day'
+  ) AS day;
 
 Backend engineering (data pipelines, streaming reconciliation, anomaly detection)
 
