@@ -1,163 +1,182 @@
-9Absolutely — "Autonomous Reconciliation Designer" is a fantastic, cutting-edge idea — especially relevant in financial services, compliance, or operations automation. It fits beautifully under AI/ML Delivery, Engineering, or Customer/Employee Experience tracks. Let’s break it down:
+src/main/java/com/example/sessiondemo/Application.java
+--------------------------------------------------
+package com.example.sessiondemo;
 
-💡 Topic Idea:
-“Autonomous Reconciliation Designer: AI-Powered Reconciliation Without Manual Rules”
-🔍 What Is It?
-An Autonomous Reconciliation Designer is a no-code or low-code AI-driven system that allows users to:
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
 
-Define reconciliation goals or rules in natural language
-
-Automatically map data sources, detect breaks, and suggest match rules
-
-Use machine learning to identify patterns, noise, or exceptions
-
-
-CREATE OR REPLACE FUNCTION calculate_workdays(start_date_str TEXT, end_date_str TEXT)
-RETURNS INTEGER AS $$
-DECLARE
-  start_date DATE;
-  end_date DATE;
-  workdays INTEGER;
-BEGIN
-  -- Convert input strings to dates
-  start_date := TO_DATE(start_date_str, 'YYYYMMDD');
-  end_date := TO_DATE(end_date_str, 'YYYYMMDD');
-
-  -- If dates are the same, return 0 immediately
-  IF start_date = end_date THEN
-    RETURN 0;
-  END IF;
-
-  -- Calculate workdays between dates (excluding weekends)
-  SELECT COUNT(*) INTO workdays
-  FROM GENERATE_SERIES(
-    LEAST(start_date, end_date) + INTERVAL '1 day', -- Start from day after earlier date
-    GREATEST(start_date, end_date),                 -- End at later date
-    INTERVAL '1 day'
-  ) AS day
-  WHERE EXTRACT(DOW FROM day) BETWEEN 1 AND 5; -- Count only Mon (1) to Fri (5)
-
-  RETURN workdays;
-END;
-$$ LANGUAGE plpgsql;
+@SpringBootApplication
+@EnableCaching
+public class Application {
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+}
 
 
-Suggest next best actions or even autonomously fix valid breaks
+src/main/java/com/example/sessiondemo/config/CacheConfig.java
+--------------------------------------------------
+package com.example.sessiondemo.config;
 
-🎯 Real-World Scenario
-Instead of writing complex SQL joins or manually setting up reconciliation rules like:
+import com.hazelcast.config.Config;
+import com.hazelcast.config.JoinConfig;
+import com.hazelcast.config.NetworkConfig;
+import com.hazelcast.spring.cache.HazelcastCacheManager;
+import com.hazelcast.core.Hazelcast;
+import com.hazelcast.core.HazelcastInstance;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.CacheManager;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
-“Match trade amounts between Book A and Book B if currency = USD and date is within T+1”
+import java.util.List;
 
-Users could input:
+@Configuration
+public class CacheConfig {
 
-"Reconcile trade data across internal and external sources. Flag mismatches where counterparty amount doesn't align within 1-day range."
+    @Value("${hazelcast.cluster.members:127.0.0.1}")
+    private List<String> clusterMembers;
 
-And the system would:
+    @Bean
+    public HazelcastInstance hazelcastInstance() {
+        Config config = new Config();
+        config.setInstanceName("hazelcast-instance");
 
-Parse intent with an LLM
+        NetworkConfig network = config.getNetworkConfig();
+        JoinConfig join = network.getJoin();
+        join.getMulticastConfig().setEnabled(false);
+        join.getTcpIpConfig().setEnabled(true);
+        clusterMembers.forEach(member -> join.getTcpIpConfig().addMember(member));
 
-Generate a reconciliation logic flow
+        config.getMapConfig("appCache").setBackupCount(1);
+        return Hazelcast.newHazelcastInstance(config);
+    }
 
-Learn from historical breaks to auto-categorize as valid or noise
-
-Offer auto-adjustments or pass to human queue
-
-🛠️ Key Capabilities
-Natural Language Input
-
-Users describe reconciliation intent in plain English
-
-LLM interprets the context and generates a rule engine or ML workflow
-
-Self-learning Break Classification
-
-Historical data is used to train a model
-
-Identifies valid, invalid, or noise breaks
-
-Learns from feedback and adapts
-
-Auto-Healing & Smart Adjustments
-
-If a break is known and fixable, the system auto-adjusts and logs justification
-
-No-code Rule Designer
-
-Drag-and-drop or voice-command style interface to define reconciliation logic
-
-Auditing & Explainability
-
-Tracks why and how decisions were made
-
-Outputs human-readable justifications for audit or compliance teams
-
-✅ Benefits
-💼 Massive Ops Efficiency: 1000+ hours/year saved on manual reconciliations
-
-📈 Improved Accuracy: Fewer human errors, better pattern recognition
-
-🧠 Institutional Memory: Doesn’t forget learned logic even with staff turnover
-
-🔐 Audit-Ready: Full traceability and transparency
-
-🤖 Faster Time-to-Market: No need to write/rewrite reconciliation logic manually
-
-🧰 Required Skills
-NLP and LLM Integration (e.g., OpenAI, Claude, Bedrock)
-
-ML modeling (classification, clustering, pattern detection)
-
-SELECT
-  COALESCE(
-    COUNT(*) FILTER (
-      WHERE EXTRACT(DOW FROM day) BETWEEN 1 AND 5 -- 1=Mon to 5=Fri
-    ),
-    0
-  ) AS workday_diff
-FROM
-  GENERATE_SERIES(
-    LEAST(TO_DATE('20240101', 'YYYYMMDD'), TO_DATE('20240105', 'YYYYMMDD')) + INTERVAL '1 day',
-    GREATEST(TO_DATE('20240101', 'YYYYMMDD'), TO_DATE('20240105', 'YYYYMMDD')),
-    INTERVAL '1 day'
-  ) AS day;
-
-Backend engineering (data pipelines, streaming reconciliation, anomaly detection)
-
-React or low-code UI dev for rule designer
-
-Domain knowledge (finance, trade matching, compliance, etc.)
-
-🔗 Session Formats
-Live demo: From natural language → reconciliation logic → auto-classification
-
-Before & after case study (manual vs autonomous recon)
-
-Discuss architecture (LLM + rules engine + feedback loop + audit layer)
+    @Bean
+    public CacheManager cacheManager(HazelcastInstance hazelcastInstance) {
+        return new HazelcastCacheManager(hazelcastInstance);
+    }
+}
 
 
-
-SELECT 
-  CASE 
-    WHEN your_string ~ 'v\d+(\D|$)' THEN 
-      regexp_replace(
-        your_string,
-        '(.*)(v\d+)(\D*)$',  -- Split into: [prefix][version][non-digit suffix]
-        '\1' || 'YOUR_NEW_STRING' || '\2\3'  -- Insert new string before version
-      )
-    ELSE 
-      your_string || 'YOUR_NEW_STRING'  -- Append if no version found
-  END AS modified_string
-FROM your_table;
+src/main/resources/application.properties
+--------------------------------------------------
+hazelcast.cluster.members=127.0.0.1
 
 
-WITH example_data AS (
-  SELECT 'gmi__59_ghshdhagajdgsyajeh gagageysyauwhwyeyeyetsywywy124.43543254334 namaste. 099999_v13' AS input_str
-)
-SELECT 
-  regexp_replace(
-    input_str,
-    '(.*)(v\d+)(\D*)$',
-    '\1_NEWVERSION\2\3'  -- Insert "_NEWVERSION" before the version
-  ) AS result
-FROM example_data;
+src/main/java/com/example/sessiondemo/store/CacheStore.java
+--------------------------------------------------
+package com.example.sessiondemo.store;
+
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
+import org.springframework.stereotype.Component;
+
+@Component
+public class CacheStore {
+
+    private final Cache appCache;
+
+    public CacheStore(CacheManager cacheManager) {
+        this.appCache = cacheManager.getCache("appCache");
+        if (this.appCache == null) {
+            throw new IllegalStateException("appCache not found. Check Hazelcast config.");
+        }
+    }
+
+    public void put(String key, Object value) {
+        appCache.put(key, value);
+    }
+
+    public <T> T get(String key, Class<T> type) {
+        return appCache.get(key, type);
+    }
+
+    public void remove(String key) {
+        appCache.evict(key);
+    }
+}
+
+
+src/main/java/com/example/sessiondemo/controller/UserController.java
+--------------------------------------------------
+package com.example.sessiondemo.controller;
+
+import com.example.sessiondemo.store.CacheStore;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+public class UserController {
+
+    private final CacheStore cacheStore;
+
+    public UserController(CacheStore cacheStore) {
+        this.cacheStore = cacheStore;
+    }
+
+    @PostMapping("/cache")
+    public String cacheData(@RequestParam String key, @RequestParam String value) {
+        cacheStore.put(key, value);
+        return "Stored in distributed cache.";
+    }
+
+    @GetMapping("/cache")
+    public String getData(@RequestParam String key) {
+        String value = cacheStore.get(key, String.class);
+        return value != null ? "Value: " + value : "No data for key.";
+    }
+
+    @DeleteMapping("/cache")
+    public String removeData(@RequestParam String key) {
+        cacheStore.remove(key);
+        return "Removed from distributed cache.";
+    }
+}
+
+
+pom.xml
+--------------------------------------------------
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://www.w3.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.example</groupId>
+    <artifactId>sessiondemo</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.7.18</version>
+        <relativePath/>
+    </parent>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.hazelcast</groupId>
+            <artifactId>hazelcast</artifactId>
+            <version>5.3.6</version>
+        </dependency>
+        <dependency>
+            <groupId>com.hazelcast</groupId>
+            <artifactId>hazelcast-spring</artifactId>
+            <version>5.3.6</version>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+
