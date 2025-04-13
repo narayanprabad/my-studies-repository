@@ -1,4 +1,12 @@
-
+CREATE TABLE HAZELCAST_PEERS (
+    ID              VARCHAR2(64) PRIMARY KEY,
+    IP_ADDRESS      VARCHAR2(64) NOT NULL,
+    PORT            NUMBER(5)    NOT NULL,
+    APP_NAME        VARCHAR2(100),
+    REGISTERED_AT   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    LAST_HEARTBEAT  TIMESTAMP,
+    STATUS          VARCHAR2(20) DEFAULT 'ACTIVE'
+);
 Certainly! Here's a professionally worded note you can share with your manager:
 
 
