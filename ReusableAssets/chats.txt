@@ -1,3 +1,19 @@
+hazelcast-cluster-demo/
+├── pom.xml
+├── src/
+│   └── main/
+│       ├── java/com/example/demo/
+│       │   ├── HazelcastClusterApp.java
+│       │   ├── HazelcastConfig.java
+│       │   └── CacheController.java
+│       └── resources/
+│           ├── application.yml
+│           ├── application-8081.yml
+│           ├── application-8082.yml
+│           └── application-8083.yml
+
+
+
 CREATE TABLE HAZELCAST_PEERS (
     ID              VARCHAR2(64) PRIMARY KEY,
     IP_ADDRESS      VARCHAR2(64) NOT NULL,
