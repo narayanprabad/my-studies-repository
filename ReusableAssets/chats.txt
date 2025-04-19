@@ -1,3 +1,9 @@
+./bin/zookeeper-server-start.sh config/zookeeper.properties
+./bin/kafka-server-start.sh config/server.properties
+
+cd /c/kafka_2.13-3.5.1
+./bin/kafka-topics.sh --bootstrap-server localhost:9092 --create --topic cache-updates --partitions 1 --replication-factor 1
+
 hazelcast-cluster-demo/
 ├── pom.xml
 ├── src/
