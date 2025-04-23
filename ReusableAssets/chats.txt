@@ -1,4 +1,18 @@
 
+Hi Chris,
+
+This is a fantastic initiative—setting up a central repository for PFS is definitely a step in the right direction.
+
+To make it even more effective, I’d like to suggest building it as a dynamic and collaborative platform—one that allows developers not only to vote on existing topics but also to contribute new items they feel are important. This would provide the central team with a clearer, real-time view of both the most pressing issues and emerging concerns, helping to prioritize efforts more efficiently.
+
+If the team is aligned with this approach, I’d be happy to help design a simple survey or feedback mechanism to capture input from the broader developer group. Of course, open to any alternate or better suggestions from others as well.
+
+Looking forward to your thoughts.
+
+Best regards,
+[Your Name]
+
+
 <ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd"
          updateCheck="false"
