@@ -1,298 +1,51 @@
-
-Hi Chris,
-
-This is a fantastic initiative—setting up a central repository for PFS is definitely a step in the right direction.
-
-To make it even more effective, I’d like to suggest building it as a dynamic and collaborative platform—one that allows developers not only to vote on existing topics but also to contribute new items they feel are important. This would provide the central team with a clearer, real-time view of both the most pressing issues and emerging concerns, helping to prioritize efforts more efficiently.
-
-If the team is aligned with this approach, I’d be happy to help design a simple survey or feedback mechanism to capture input from the broader developer group. Of course, open to any alternate or better suggestions from others as well.
-
-Looking forward to your thoughts.
-
-Best regards,
-[Your Name]
-
-
-<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd"
-         updateCheck="false"
-         monitoring="autodetect"
-         dynamicConfig="true">
-
-    <diskStore path="java.io.tmpdir/ehcache" />
-
-    <cache name="demoCache"
-           maxEntriesLocalHeap="1000"
-           timeToLiveSeconds="600"
-           eternal="false"
-           overflowToDisk="false"
-           statistics="true" />
-</ehcache>
-
-
-./bin/zookeeper-server-start.sh config/zookeeper.properties
-./bin/kafka-server-start.sh config/server.properties
-
-cd /c/kafka_2.13-3.5.1
-./bin/kafka-topics.sh --bootstrap-server localhost:9092 --create --topic cache-updates --partitions 1 --replication-factor 1
-
-hazelcast-cluster-demo/
-├── pom.xml
-├── src/
-│   └── main/
-│       ├── java/com/example/demo/
-│       │   ├── HazelcastClusterApp.java
-│       │   ├── HazelcastConfig.java
-│       │   └── CacheController.java
-│       └── resources/
-│           ├── application.yml
-│           ├── application-8081.yml
-│           ├── application-8082.yml
-│           └── application-8083.yml
-
-
-
-CREATE TABLE HAZELCAST_PEERS (
-    ID              VARCHAR2(64) PRIMARY KEY,
-    IP_ADDRESS      VARCHAR2(64) NOT NULL,
-    PORT            NUMBER(5)    NOT NULL,
-    APP_NAME        VARCHAR2(100),
-    REGISTERED_AT   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    LAST_HEARTBEAT  TIMESTAMP,
-    STATUS          VARCHAR2(20) DEFAULT 'ACTIVE'
-);
-Certainly! Here's a professionally worded note you can share with your manager:
-
-
----
-
-Subject: Hazelcast Integration and Distributed Caching Demo
-
-Hi [Manager's Name],
-
-As discussed, I’ve completed the integration of Hazelcast into our application, replacing the earlier session-specific logic with a clean, cache-based implementation that aligns with distributed caching best practices.
-
-Additionally, I developed a separate proof of concept to demonstrate data sharing across two Spring Boot instances running on different ports, simulating deployment on separate VMs. This showcases Hazelcast’s clustering capabilities and how it maintains consistency across nodes without relying on session management.
-
-Please let me know if you'd like a walkthrough of the setup or further enhancements like Kafka-based event propagation.
-
-Best regards,
-[Your Name]
-
-
----
-
-Would you like me to tailor this further for email or Jira update format?
-
-
-
-
-import org.springframework.stereotype.Component;
-import javax.annotation.PostConstruct;
-import javax.servlet.ServletContext;
-
-@Component
-public class ServletContextHolder {
-
-    private static ServletContext servletContext;
-
-    private final ServletContext injectedContext;
-
-    public ServletContextHolder(ServletContext injectedContext) {
-        this.injectedContext = injectedContext;
-    }
-
-    @PostConstruct
-    public void init() {
-        servletContext = this.injectedContext;
-    }
-
-    public static ServletContext getServletContext() {
-        return servletContext;
-    }
-}
-
-
-
-src/main/java/com/example/sessiondemo/Application.java
---------------------------------------------------
-package com.example.sessiondemo;
-
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cache.annotation.EnableCaching;
-
-@SpringBootApplication
-@EnableCaching
-public class Application {
-    public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
-    }
-}
-
-
-src/main/java/com/example/sessiondemo/config/CacheConfig.java
---------------------------------------------------
-package com.example.sessiondemo.config;
-
-import com.hazelcast.config.Config;
-import com.hazelcast.config.JoinConfig;
-import com.hazelcast.config.NetworkConfig;
-import com.hazelcast.spring.cache.HazelcastCacheManager;
-import com.hazelcast.core.Hazelcast;
-import com.hazelcast.core.HazelcastInstance;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.CacheManager;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
-import java.util.List;
-
-@Configuration
-public class CacheConfig {
-
-    @Value("${hazelcast.cluster.members:127.0.0.1}")
-    private List<String> clusterMembers;
-
-    @Bean
-    public HazelcastInstance hazelcastInstance() {
-        Config config = new Config();
-        config.setInstanceName("hazelcast-instance");
-
-        NetworkConfig network = config.getNetworkConfig();
-        JoinConfig join = network.getJoin();
-        join.getMulticastConfig().setEnabled(false);
-        join.getTcpIpConfig().setEnabled(true);
-        clusterMembers.forEach(member -> join.getTcpIpConfig().addMember(member));
-
-        config.getMapConfig("appCache").setBackupCount(1);
-        return Hazelcast.newHazelcastInstance(config);
-    }
-
-    @Bean
-    public CacheManager cacheManager(HazelcastInstance hazelcastInstance) {
-        return new HazelcastCacheManager(hazelcastInstance);
-    }
-}
-
-
-src/main/resources/application.properties
---------------------------------------------------
-hazelcast.cluster.members=127.0.0.1
-
-
-src/main/java/com/example/sessiondemo/store/CacheStore.java
---------------------------------------------------
-package com.example.sessiondemo.store;
-
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
-import org.springframework.stereotype.Component;
-
-@Component
-public class CacheStore {
-
-    private final Cache appCache;
-
-    public CacheStore(CacheManager cacheManager) {
-        this.appCache = cacheManager.getCache("appCache");
-        if (this.appCache == null) {
-            throw new IllegalStateException("appCache not found. Check Hazelcast config.");
-        }
-    }
-
-    public void put(String key, Object value) {
-        appCache.put(key, value);
-    }
-
-    public <T> T get(String key, Class<T> type) {
-        return appCache.get(key, type);
-    }
-
-    public void remove(String key) {
-        appCache.evict(key);
-    }
-}
-
-
-src/main/java/com/example/sessiondemo/controller/UserController.java
---------------------------------------------------
-package com.example.sessiondemo.controller;
-
-import com.example.sessiondemo.store.CacheStore;
-import org.springframework.web.bind.annotation.*;
-
-@RestController
-public class UserController {
-
-    private final CacheStore cacheStore;
-
-    public UserController(CacheStore cacheStore) {
-        this.cacheStore = cacheStore;
-    }
-
-    @PostMapping("/cache")
-    public String cacheData(@RequestParam String key, @RequestParam String value) {
-        cacheStore.put(key, value);
-        return "Stored in distributed cache.";
-    }
-
-    @GetMapping("/cache")
-    public String getData(@RequestParam String key) {
-        String value = cacheStore.get(key, String.class);
-        return value != null ? "Value: " + value : "No data for key.";
-    }
-
-    @DeleteMapping("/cache")
-    public String removeData(@RequestParam String key) {
-        cacheStore.remove(key);
-        return "Removed from distributed cache.";
-    }
-}
-
-
-pom.xml
---------------------------------------------------
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://www.w3.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>com.example</groupId>
-    <artifactId>sessiondemo</artifactId>
-    <version>1.0-SNAPSHOT</version>
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.18</version>
-        <relativePath/>
-    </parent>
-    <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-cache</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.hazelcast</groupId>
-            <artifactId>hazelcast</artifactId>
-            <version>5.3.6</version>
-        </dependency>
-        <dependency>
-            <groupId>com.hazelcast</groupId>
-            <artifactId>hazelcast-spring</artifactId>
-            <version>5.3.6</version>
-        </dependency>
-    </dependencies>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
-</project>
-
+InvestWise Demo Script
+1. Problem Statement
+The financial investment landscape is complex and intimidating for average individuals:
+
+Overwhelming variety of investment options (mutual funds, stocks, bonds, etc.)
+Difficulty in matching investments to personal risk profiles and goals
+Lack of personalized guidance without expensive financial advisors
+Market volatility creates uncertainty for inexperienced investors
+Most investment platforms lack context-aware, goal-based recommendations
+2. Our Approach
+InvestWise solves these challenges through:
+
+Personalized AI-Powered Investment Advisory
+
+Natural language understanding to interpret investment queries
+Personalized recommendations based on user's risk profile, age, and goals
+Goal-based investing with customized asset allocation strategies
+Market condition awareness to adjust recommendations during volatility
+Rule-based expert system that mimics financial advisor reasoning
+Key Differentiators
+
+Conversation-based interface instead of complex dashboards
+Goal-oriented investment planning rather than product-focused
+Educational elements built into every recommendation
+Context-aware responses that consider user's full financial picture
+Transparent, explainable recommendations with clear rationales
+3. Tech Stack
+Frontend
+
+React with TypeScript for type safety and developer experience
+Tailwind CSS with ShadCN components for professional UI design
+Recharts for dynamic data visualization (portfolio allocations)
+Responsive design optimized for all devices
+Backend
+
+Express server with TypeScript
+Rule-based natural language processing for query intent classification
+In-memory data storage with localStorage persistence
+RESTful API architecture
+AI Components
+
+Custom rule-based investment recommendation engine
+Query intent classification system
+Personalized portfolio generation algorithms
+Risk profile analysis system
+Market condition classification
+Data Security
+
+Client-side data storage to maintain privacy
+No external API dependencies for core functionality
+Strong rate limiting and anti-looping protection
