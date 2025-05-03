@@ -1,3 +1,12 @@
+kafkaTemplate.send("cache-updates", key, data)
+    .addCallback(success -> {
+        System.out.println("Sent to: " + success.getRecordMetadata().topic() + " partition=" +
+                success.getRecordMetadata().partition() + " offset=" + success.getRecordMetadata().offset());
+    }, failure -> {
+        failure.printStackTrace();
+    });
+
+
 InvestWise Demo Script
 1. Problem Statement
 The financial investment landscape is complex and intimidating for average individuals:
