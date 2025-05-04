@@ -1,6 +1,22 @@
 Our 8-Month Approach
 Months 1-2: Discovery
 
+Months 1–2: Discovery
+🔹 Identified key pain points for Indian investors
+🔹 Assessed gaps in existing platforms
+
+Months 3–4: Tech Integration
+🔹 Built React + Node.js stack with AI/ML
+🔹 Designed multi-profile family management system
+
+Months 5–6: Core Development
+🔹 Integrated India-specific market data
+🔹 Developed AI-powered recommendation engine
+
+Months 7–8: Refinement & Launch
+🔹 Enhanced performance & mobile responsiveness
+🔹 Successfully launched innovative solution
+
 Team discussions revealed key pain points for Indian investors
 Analyzed existing platforms' limitations in the Indian context
 Months 3-4: Technology Integration
