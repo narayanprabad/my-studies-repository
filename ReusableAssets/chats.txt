@@ -1,3 +1,17 @@
+Rationale for Choosing a Project Outside JPMC Premises
+
+To accelerate innovation and streamline development, I opted to build the project outside the JPMC environment. This approach offered the following key advantages:
+
+UI Development: Leveraged tools like Cursor for rapid UI component creation, supported by a rich plugin ecosystem.
+
+ML Model Access: Utilized readily available TensorFlow models from open-source repositories, which would typically require time-consuming approvals within JPMC.
+
+Data Access: Integrated public financial APIs directly, avoiding delays from internal data access protocols and governance layers.
+
+Faster Deployment Cycles: Enabled rapid prototyping and deployment on AWS, bypassing the overhead of coordinating with Atlas 1.0 teams—achieving changes in seconds rather than days.
+
+
+
 Our 8-Month Approach
 Months 1-2: Discovery
 
