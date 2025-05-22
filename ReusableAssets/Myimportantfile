@@ -1,1 +1,174 @@
 
+Thank you for the clarification. Here's the revised, crisp, and professional 2–3 minute demo script based on:
+
+Your original PowerPoint structure: Objectives, Key Results, Execution Strategy, Benefits
+
+Corrected project scope: starting with Union2, with GREX, XBE, Falcon, Trex to follow
+
+Collaborative tone: Humble, factual, and motivating for all stakeholders
+
+Integrated key takeaways from the second presentation, avoiding grandiose terms
+
+
+
+---
+
+ENCORE Summary – Professional Demo Script (2–3 mins)
+
+Good [morning/afternoon], everyone.
+
+I’d like to share a brief overview of the ENCORE initiative—our unified effort to modernize controls and reconciliation systems within PFS Clearing.
+
+
+---
+
+1. Objectives
+
+ENCORE’s primary objective is to migrate and consolidate aging recon and controls systems—starting with the Union2 platform. Systems like GREX, XBE, Falcon, and Trex will follow in a phased approach.
+
+These legacy systems were designed and built with immense dedication by pioneers like Sean and Colin. They’ve reliably supported our global operations for over two decades, but evolving needs now call for a scalable, cloud-native architecture.
+
+Through ENCORE, we aim to:
+
+Streamline fragmented workflows,
+
+Reduce tech debt,
+
+Build reusable and service-oriented components that align with modern operational standards.
+
+
+
+---
+
+2. Key Results
+
+Already, we’ve seen meaningful outcomes:
+
+Union2 controls are being re-platformed with modular services, AWS-native capabilities, and near real-time reporting.
+
+A unified 3-layer view brings clarity across operations, risk, and tech.
+
+Control logic is simplified and made self-service enabled.
+
+Dependencies on legacy reconciliation systems are being retired with minimal disruption.
+
+
+
+---
+
+3. Execution Strategy
+
+This transformation is being delivered through a strong partnership between PFS Tech, Post Trade Technology, and the iRecs team, working as a single, integrated program.
+
+The approach balances continuity and change—retaining what works, and carefully modernizing where required. Collaborations across teams have enabled faster decision-making, joint ownership of delivery, and greater alignment with user needs.
+
+The phased migration model allows us to validate along the way and adapt based on feedback.
+
+
+---
+
+4. Benefits
+
+Reduced manual intervention and improved data accuracy through automation.
+
+Quicker onboarding of new control logic.
+
+Improved operational efficiency with estimated savings of over 1,200 hours annually.
+
+Enhanced transparency and audit-readiness.
+
+Most importantly, it provides a foundation for reusing control patterns across platforms.
+
+
+
+---
+
+Closing
+
+In closing, ENCORE is not just a tech upgrade—it’s a collective shift toward simplicity, reuse, and scalability. It’s been built with humility, in deep appreciation of what came before, and with enthusiasm for what lies ahead.
+
+Thank you to everyone across functions who’s made this possible. We're excited to continue this journey—together.
+
+
+---
+
+Let me know if you’d like a PowerPoint version with speaker notes or want to tailor this for senior leadership or a team session.
+
+
+
+
+Here is a professional, humble, and crisp demo script to walk through each section of the ENCORE features slide you’ve shared. It’s structured for a live walkthrough and should fit within 3–4 minutes of delivery while being precise and audience-friendly.
+
+
+---
+
+ENCORE Feature Walkthrough – Demo Script
+
+Let me now walk you through some of the key features of the ENCORE platform, with a focus on how it simplifies day-to-day workflows and improves efficiency.
+
+
+---
+
+1. Integrated View
+
+We’ll begin with the Integrated View.
+In the legacy system, users had to toggle between multiple screens—substantiate breaks in one place and report them in another. This created operational friction and increased the risk of oversight.
+
+ENCORE consolidates all of this into a single window.
+Users can now view trade details, justify breaks, and complete reporting— including SCPP, middle office, and GMI transfers—all from the same screen.
+
+Most importantly, records are auto-plugged and auto-reported based on pre-defined logic. As of now, about 90% of breaks are cleared without manual intervention, significantly improving turnaround time.
+
+
+---
+
+2. Automated Supervisory Controls
+
+Next is Automated Supervisory Controls.
+Supervisors can now define monitoring rules for critical control functions. These configurations ensure consistent oversight, eliminate manual checks, and enable timely alerts when something deviates from the expected pattern.
+
+This puts governance into the hands of the teams, with flexibility to evolve as business needs change.
+
+
+---
+
+3. Task Master & Desk Allocation
+
+ENCORE also introduces a Task Master module.
+Tasks are automatically assigned to individuals based on control logic and mapped against teams. This is coupled with a well-defined escalation matrix to ensure nothing falls through the cracks.
+
+We’ve also introduced Desk Allocation, which makes responsibility tracking seamless—especially during shifts or handovers.
+
+
+---
+
+4. MIS Reports
+
+On the reporting front, ENCORE offers a comprehensive suite of MIS reports and dashboards, aligned to the efficiency and governance agenda.
+
+Previously, many of these reports involved complex, manual Alteryx workflows. With ENCORE, these are now integrated into the platform and can be scheduled or triggered with minimal effort, making reviews faster and more reliable.
+
+
+---
+
+5. Extended Features
+
+Finally, a few enhanced capabilities have been built into the system to support business operations:
+
+Automated alerts for FND LTD notifications to avoid unintended physical deliveries.
+
+Full transparency for users via an event audit trail, enabling traceability across every control action taken.
+
+
+
+---
+
+Closing
+
+In summary, ENCORE has been designed to simplify controls, reduce manual effort, and bring clarity and accountability to every user role. These features reflect valuable inputs from the business, operations, and technology teams, and we look forward to enhancing them further based on user feedback.
+
+
+---
+
+Let me know if you'd like a PowerPoint speaker notes version or if you'd like to tailor this for a stakeholder-specific audience like Ops or Risk.
+
