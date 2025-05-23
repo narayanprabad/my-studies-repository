@@ -1,3 +1,60 @@
+Project Title: Silent Saver: AI-Powered Detection and Prevention of Hidden Cost Leakages
+
+Project Description:
+Silent Saver is a cross-LOB, AI-driven platform that continuously monitors applications, infrastructure, and operations to uncover silent but critical cost leakages across J.P. Morgan Chase. Leveraging telemetry data, process flows, control logs, and configuration repositories, Silent Saver applies machine learning, rule mining, and GenAI summarization to proactively identify inefficiencies and misconfigurations that lead to unnecessary financial drain. It then provides actionable recommendations to technology and business stakeholders to fix, reconfigure, or eliminate those drains.
+
+Project Benefits:
+
+Detects and prevents millions of dollars in annual losses
+
+Creates a shared dashboard of savings opportunities across CCB, AWM, and CIB
+
+Helps manage infrastructure and operations spend without impacting headcount
+
+Turns observability into actionable financial insight
+
+Strengthens collaboration between Ops, Tech, and Business teams
+
+Required Skillset:
+
+Spring Boot, Kafka, AWS (CloudWatch, Lambda, S3)
+
+Python (for ML pipeline), SQL, Snowflake
+
+Dynatrace, Splunk, OpenTelemetry
+
+LangChain, GPT-4, Bedrock for GenAI summarization
+
+Cost allocation tagging, FinOps knowledge preferred
+
+Abstract Details - Section 1:
+Modern enterprise systems at JPMC generate massive amounts of operational and telemetry data, but most of it remains underutilized when it comes to financial impact analysis. Silent Saver bridges this gap by acting as a continuously running "Cost Intelligence Engine". It connects to systems such as AWS CloudWatch, Snowflake usage logs, Kafka pipelines, Dynatrace, and control flow trackers to identify inefficiencies. Using machine learning algorithms like Isolation Forest, clustering, and time-series pattern detection, it finds anomalies in cost behavior. The GenAI layer summarizes these findings into human-readable narratives and links them to tangible financial loss projections. For example, a recurring batch job consuming high compute every Monday that produces no net change in system state is flagged, narrated, and quantified.
+
+Abstract Details - Section 2:
+Silent Saver’s detection logic is reinforced through four core engines:
+
+Anomaly Detection Engine: Continuously scans telemetry data for abnormal spikes, drifts, or cyclical inefficiencies.
+
+Rule Learning Module: Learns process rules based on historical successful operations and flags deviations or over-engineering.
+
+Root Cause Mapper: Correlates log patterns and control paths to pinpoint why an inefficiency occurs, not just where.
+
+Recommendation Layer: Uses LLMs to synthesize recommendations like schedule realignment, control simplification, retry suppression, or query optimization.
+
+The platform provides both technical and non-technical dashboards, where developers can deep-dive into metrics while business stakeholders can see dollars lost per day/week/month. Key pilot implementations include:
+
+CIB: Elimination of 30,000/month redundant T+0 job reruns
+
+AWM: Optimization of client call logic to skip non-actionable portfolios
+
+CCB: Reduction of failed ACH retry loops due to outdated routing rules
+
+Individual Value - Call to Action:
+Everyone at JPMC can benefit: SREs, Dev teams, Product owners, Ops leads. Plug in your system into Silent Saver. Within days, identify where your system is bleeding dollars — and act before Finance asks questions. Be a proactive cost guardian. Contact the team on #silent-saver-devup for onboarding today.
+
+[NOTE: A PDF with visuals and architecture diagram will be generated next.]
+
+
 
 Absolutely—ending your DEV UP session with a compelling call to action (CTA) not only increases engagement but also encourages cross-LOB adoption or collaboration. Here's a professional and practical CTA tailored for your SmartSDLC session:
 
