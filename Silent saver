@@ -1,0 +1,51 @@
+**Project Title:** Silent Saver: AI-Powered Detection and Prevention of Hidden Cost Leakages
+
+**Project Description:**
+Silent Saver is a cross-LOB, AI-driven platform that continuously monitors applications, infrastructure, and operations to uncover silent but critical cost leakages across J.P. Morgan Chase. Leveraging telemetry data, process flows, control logs, and configuration repositories, Silent Saver applies machine learning, rule mining, and GenAI summarization to proactively identify inefficiencies and misconfigurations that lead to unnecessary financial drain. It then provides actionable recommendations to technology and business stakeholders to fix, reconfigure, or eliminate those drains.
+
+**Project Benefits:**
+
+* Detects and prevents millions of dollars in annual losses
+* Creates a shared dashboard of savings opportunities across CCB, AWM, and CIB
+* Helps manage infrastructure and operations spend without impacting headcount
+* Turns observability into actionable financial insight
+* Strengthens collaboration between Ops, Tech, and Business teams
+
+**Required Skillset:**
+
+* Spring Boot, Kafka, AWS (CloudWatch, Lambda, S3)
+* Python (for ML pipeline), SQL, Snowflake
+* Dynatrace, Splunk, OpenTelemetry
+* LangChain, GPT-4, Bedrock for GenAI summarization
+* Cost allocation tagging, FinOps knowledge preferred
+
+**Abstract Details - Section 1:**
+Legacy systems at JPMC often involve multiple interdependent components—batch processors, monolithic services, ETL jobs, mainframe hooks, and reactive alerts. Many of these systems operate on assumptions made years ago and no longer reflect real business need. Silent Saver integrates into this ecosystem by tapping into logs, resource consumption metrics, control decisions, and job outcomes, constructing a dynamic financial lens over application behavior.
+
+The platform uses causal inference and ML-based anomaly detection to build a real-time efficiency map: identifying low-business-value but high-compute workflows, dormant Kafka topics with persistent consumers, control rules that fire 98% false positives, or EOD reports generated daily for non-existent consumers. Instead of simply looking for job reruns, it assesses the **intent vs. outcome** gap in system activities.
+
+This system identifies examples like: legacy workflows where reconciliation steps are duplicated across internal and vendor systems; customer outreach flows that consume IVR and SMS credits for inactive clients; or rules engines triggering alerts to humans where straight-through processing would suffice. These are quantified in financial terms using our FinOps calculator which combines infra cost (Snowflake/WAF/S3), human cost (time to respond, hours logged), and opportunity cost (deferred business value).
+
+**Abstract Details - Section 2:**
+Silent Saver comprises the following components:
+
+1. **Legacy Signal Interpreter:** Hooks into COBOL/Sybase/Mainframe logs, Struts/JSP-based applications, and interprets batch logs to extract metadata and performance behavior with minimal code change.
+
+2. **Semantic Cost Graph:** Creates a graph of system functions vs business output (e.g., how many steps are taken for one client onboarding, and where delays happen). This graph helps identify processes with declining business ROI.
+
+3. **Dynamic Noise Classifier:** Learns which alerts, validations, and reconciliations generate low/no value and classifies them as suppressible, deferrable, or automatable.
+
+4. **Narrative Engine:** Converts technical metrics into human-readable GenAI summaries such as: “System X spent 18.3 compute hours and 1.2 TB data transfer last month for an extract used by zero clients,” or “Control 47.2.1 has not prevented any breaks in 18 months, despite 8000 executions.”
+
+5. **Efficiency Suggestion Hub:** Provides a list of prioritized actions—e.g., retire unused extract, consolidate duplicated validations, suppress low-confidence alerts, or merge static rules into dynamic scoring models.
+
+Examples from pilot systems:
+
+* In Asset & Wealth Management, multiple scheduled snapshot jobs run to generate static NAV files that haven’t been accessed in 3+ quarters. Replacing them with an on-demand pipeline could save both compute cost and storage.
+* In Corporate & Investment Banking, settlement workflow validation logic still checks for legacy instruments that haven’t been traded since 2019, incurring cost via unnecessary branching and alerting.
+* In Consumer Banking, customer notification engines ping churned users or dormant accounts due to hardcoded eligibility filters not linked to CRM updates.
+
+**Individual Value - Call to Action:**
+Silent Saver is a game changer for developers, product owners, and ops leads. Plug your application logs, control paths, and cost dashboards into Silent Saver and get a ranked list of where your systems are silently draining budgets. Use it to proactively drive change, retire waste, and justify budgets. Join the Silent Saver movement via #silent-saver-devup and start saving intelligently, not reactively.
+
+**\[NOTE: A PDF with visuals and architecture diagram will be generated next.]**
