@@ -1,1 +1,72 @@
 
+1. RegIntel Agent – AI Copilot for Regulatory Reporting Workbench
+Category: Compliance Automation / AI Assistant
+Lead: Narayanan Ramachandran (AO), Gobind Praharaj (Tech Lead)
+
+Purpose:
+To streamline the Regulatory Reporting Workbench (RRW) using an AI assistant that automates recurring reporting tasks, tracks user actions, and proactively flags regulatory changes.
+
+Key Capabilities:
+
+Scheduled regulatory report downloads with calendar intelligence
+
+Monitors global regulatory feeds (FCA, ESMA, etc.) and triggers alerts
+
+Tracks user actions and sends personalized smart reminders
+
+Conversational chatbot for quick user queries and report lookups
+
+Recommends efficiencies and auto-escalates at-risk items
+
+Impact:
+Empowers Ops with reduced manual effort, improves SLA compliance, and enhances audit and regulatory readiness.
+
+2. EncoreAI – Smart Matching & Controls Assistant for Global House Reconciliation
+Category: Reconciliation Automation / AI-Enhanced Controls
+Lead: Narayanan Ramachandran (AO), Gobind Praharaj (Tech Lead)
+
+Purpose:
+To power Encore (the global house reconciliation platform) with intelligent matching, proactive substantiation predictions, and cross-system insights for enhanced engineering controls.
+
+Key Capabilities:
+
+Predicts manual substantiations and pre-fills commentary using ML
+
+Auto-links instruments using historical mapping and fuzzy logic
+
+Intelligent task tracking based on user resolution patterns
+
+Automated report download scheduler and email notifications
+
+System watcher for clearing and middle-office changes impacting reconciliation
+
+Match explainability, anomaly detection, and confidence scoring
+
+Impact:
+Significantly reduces reconciliation workload, improves match rates, and enhances control health monitoring across global markets.
+
+3. SmartSDLC – AI-Driven SDLC Automation Assistant
+Category: Developer Productivity / GenAI for Engineering
+Hackathon Entry – 2025
+Lead: Narayanan Ramachandran
+
+Purpose:
+To reinvent the Software Development Lifecycle (SDLC) by enabling a GenAI-powered assistant that transforms plain English prompts into complete product development workflows.
+
+Key Capabilities:
+
+Prompt-to-Architecture: Generates design diagrams, tech stacks, and cloud components
+
+Prompt-to-UI: Builds frontend UI mockups from business context
+
+Prompt-to-JIRA: Converts requirements into epics, stories, and tasks
+
+Sprint Copilot: Recommends sprint capacity and tracks status intelligently
+
+DevOps Integration: Links to Git, CI/CD, Swagger for deployment-ready outputs
+
+Status Chatbot: Auto-notifies progress, blockers, and story updates in Slack or Teams
+
+Impact:
+Drastically reduces developer onboarding time, enhances agile project velocity, and democratizes product ideation across tech and non-tech users.
+
